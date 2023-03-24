@@ -102,4 +102,7 @@
     <string name="rhythm_looper">Rhythm Looper</string>
     <string name="mic_sens_info">A 0db sensibility means the microphone wont capture any sound</string>
     <string name="chord_library">Chord Library</string>
+    <string name="pulsos_por_minutos">Beats per Minute</string>
+    <string name="play">play</string>
+
 </resources>

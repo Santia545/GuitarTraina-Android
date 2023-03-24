@@ -1,4 +1,4 @@
-package com.example.guitartraina.ui;
+package com.example.guitartraina.ui.metronome;
 
 import android.os.Bundle;
 

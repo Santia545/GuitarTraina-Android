@@ -143,5 +143,9 @@
     <string name="rhythm_looper">Reproductor en Bucle</string>
     <string name="mic_sens_info">Una sensibilidad de 0 significa que el microfono no captura ningun sonido</string>
     <string name="chord_library">Biblioteca de Acordes</string>
+    <string name="pulsos_por_minutos">Pulsos por Minutos</string>
+    <string name="defalut_bpm" translatable="false">120</string>
+    <string name="play">Reproducir</string>
+
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

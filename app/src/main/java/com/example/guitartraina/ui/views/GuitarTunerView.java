@@ -177,6 +177,11 @@ public class GuitarTunerView extends View {
     }
 
     @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         super.performClick();
         if (motionEvent.getAction() != MotionEvent.ACTION_DOWN) {
