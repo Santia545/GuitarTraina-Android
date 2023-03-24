@@ -21,7 +21,7 @@
         tools:targetApi="m" >
         <activity
             android:name=".activities.metronome.MetronomeActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".activities.tuner.TuningCreationActivity"
             android:exported="false" />

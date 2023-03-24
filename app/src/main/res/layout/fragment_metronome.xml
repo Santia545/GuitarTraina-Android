@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:hint="@string/pulsos_por_minutos"
-                android:inputType="textEmailAddress"
+                android:inputType="number"
                 android:layout_marginVertical="10dp"
                 android:background="?android:attr/windowBackground"
                 app:errorEnabled="true"
@@ -96,6 +96,7 @@
         />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/metronome_play_btn"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
         app:icon="@drawable/baseline_play_arrow_24"

@@ -7,60 +7,80 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.guitartraina.R;
+import com.example.guitartraina.activities.metronome.Metronome;
+import com.example.guitartraina.ui.views.MetronomeView;
+import com.google.android.material.textfield.TextInputLayout;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MetronomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.Objects;
+
 public class MetronomeFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public MetronomeFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MetronomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MetronomeFragment newInstance(String param1, String param2) {
-        MetronomeFragment fragment = new MetronomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private Button btnPlay;
+    private TextInputLayout etBPM;
+    private Spinner timeSignature;
+    private int noteType;
+    private int noteNumber;
+    private MetronomeView metronomeView;
+    private Metronome metronome;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+         metronome = new Metronome();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_metronome, container, false);
+        View view = inflater.inflate(R.layout.fragment_metronome, container, false);
+        btnPlay = view.findViewById(R.id.metronome_play_btn);
+        etBPM = view.findViewById(R.id.beats_per_minute);
+        timeSignature = view.findViewById(R.id.time_signature);
+        metronomeView = view.findViewById(R.id.metronomeView);
+        addViewOnClickListeners();
+        return view;
+    }
+
+    private void addViewOnClickListeners() {
+        Objects.requireNonNull(etBPM.getEditText()).setOnEditorActionListener((textView, i, keyEvent) -> {
+            if (i == EditorInfo.IME_ACTION_DONE) {
+                String text = textView.getText().toString();
+                if (text.equals("")) {
+                    Toast.makeText(requireContext(), R.string.metronome_empty_bpm_error, Toast.LENGTH_SHORT).show();
+                    etBPM.getEditText().setText(R.string.defalut_bpm);
+                    return true; // Consume the event
+                }
+                int bpm = Integer.parseInt(text);
+                if (bpm > 500) {
+                    Toast.makeText(requireContext(), R.string.metronome_invalid_bpm_error, Toast.LENGTH_SHORT).show();
+                    etBPM.getEditText().setText(R.string.defalut_bpm);
+                    return true; // Consume the event
+                }
+
+            }
+            return false;
+        });
+        timeSignature.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int itemPosition, long l) {
+                String[] timeSignature = adapterView.getItemAtPosition(itemPosition).toString().split("/");
+                noteNumber = Integer.parseInt(timeSignature[0]);
+                noteType = Integer.parseInt(timeSignature[1]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        btnPlay.setOnClickListener(view -> {
+            etBPM.getEditText().onEditorAction(EditorInfo.IME_ACTION_DONE);
+        });
     }
 }

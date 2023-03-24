@@ -108,6 +108,7 @@ public class TuningCreationActivity extends AppCompatActivity {
         }
         btnResetTuning.setOnClickListener(view -> resetTuning());
         btnSaveTuning.setOnClickListener(view -> {
+            referenceNote.onEditorAction(EditorInfo.IME_ACTION_DONE);
             recalculateTuning();
             boolean isSharperThan10Cents = false;
             for (int i = 0; i < strings.length; i++) {
