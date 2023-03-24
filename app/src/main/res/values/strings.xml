@@ -1,0 +1,146 @@
+<resources>
+    <string name="app_name" translatable="false">Guitar Traina</string>
+    <string name="recuperar_contrase_a"><u>Recuperar Contraseña</u></string>
+    <string name="crear_nueva_cuenta"><u>Crear nueva cuenta</u></string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Hogar</string>
+    <string name="title_dashboard">Panel</string>
+    <string name="title_notifications">Notificaciones</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="reportar_errores">Reportar Errores</string>
+    <string name="ingresa_el_titulo_del_error_ej_la_configuracion_no_se_guarda">Ingresa el titulo del error Ej: La configuracion no se guarda</string>
+    <string name="ingresa_el_numero_de_veces_que_ocurrio_el_error">Ingresa el numero de veces que ocurrio el Error</string>
+    <string name="ingresa_los_pasos_para_reproducir_el_problema_ej_en_el_afinador_intentar_crear_una_afinacion">Ingresa los pasos para reproducir el problema. Ej: En el afinador intentar crear una afinacion</string>
+    <string name="ingresa_la_descripcion_del_problema">Ingresa la descripcion del problema:</string>
+    <string name="enviar_reporte">Enviar Reporte</string>
+    <string name="ingresa_tu_email">Ingresa tu Email</string>
+    <string name="ingresa_tu_contrase_a">Ingresa tu Contraseña</string>
+    <string name="iniciar_sesion">Iniciar Sesion</string>
+    <string name="registro">Registro</string>
+    <string name="confirma_tu_contrase_a">Confirma tu Contraseña</string>
+    <string name="ingresa_tu_nombre_de_usuario">Ingresa tu nombre de Usuario</string>
+    <string name="registrar_cuenta">Registrar Cuenta</string>
+    <string name="cambiar_contrase_a">Cambiar contraseña</string>
+    <string name="ingresa_el_token_de_autenticacion">Ingresa el token de autenticacion</string>
+    <string name="reestablecer_contrase_a">Reestablecer Contraseña</string>
+    <string name="guitartraina_logo" translatable="false">GuitarTraina Logo</string>
+    <string name="c_sar_santiago_inc" translatable="false">César Santiago INC</string>
+    <string name="afinador">Afinador</string>
+    <string name="configuracion">Configuracion</string>
+    <string name="enable_posture_notifications">Activar notificaciones de postura</string>
+    <string name="afinacion_por_defecto">Afinacion por defecto</string>
+    <string name="sensibilidad_del_microfono">Sensibilidad del Microfono:</string>
+    <string name="microfono">Microfono</string>
+    <string name="lenguaje">Lenguaje:</string>
+    <string name="log_out">Cerrar Sesión:</string>
+    <string name="log_in">Iniciar Sesión</string>
+    <string name="enable_practice_notifications">Activar notificaciones de practica</string>
+    <string name="notification_time">Tiempo de notificacion:</string>
+    <string name="resumen_sensibilidad_mic">Establece el volumen minimo que el microfono capturará</string>
+    <string name="ganancia_del_microfono">Ganancia del microfono</string>
+    <string name="lenguajes_disponibles">Lenguajes Disponibles</string>
+    <string name="cuenta">Cuenta</string>
+    <string name="click_to_logout">Click para cerrar sesión</string>
+    <string name="click_to_login">Click para iniciar sesión</string>
+    <string name="time_cant_be_more_than">"El tiempo no puede ser mayor que "</string>
+    <string name="time_cant_be_less_than">"El tiempo no puede ser menor que "</string>
+    <string name="time_format_lenght_error">El formato de tiempo no es correcto, asegurante  de ingresar solo 8 caracteres</string>
+    <string name="time_format_HHMMSS_error">"El tiempo debe seguir el siguiente formato: HH:MM:SS "</string>
+    <string name="time_format_hh_error">Formato incorrecto, HH debe ser menor a 24</string>
+    <string name="time_format_mm_error">Formato incorrecto, MM debe ser menor a 60</string>
+    <string name="time_format_ss_error">Formato incorrecto, SS debe ser menor a 60</string>
+    <string name="minutos">" Minutos"</string>
+    <string name="entrar_como_invitado">Entrar Como INVITADO</string>
+    <string name="entrenador_de_bends">Entrenador de Bends</string>
+    <string name="metronomo">Metronomo</string>
+    <string name="sesion_grupal">Sesion Grupal</string>
+    <string name="entrenador_de_oido">Entrenador de Oido</string>
+    <string name="clasificados">Clasificados</string>
+    <string name="sin_clasificar">Sin Clasificar</string>
+    <string name="detective_de_ritmo">Detective de Ritmo</string>
+    <string name="progreso">Progreso</string>
+    <string name="ejercicios">Ejercicios</string>
+    <string name="contrase_a_invalida">Fallido: contraseña incorrecta</string>
+    <string name="exito">Exito</string>
+    <string name="email_incorrecto">"Error el email no sigue el formato correcto "</string>
+    <string name="fallido">Fallido:</string>
+    <string name="error_longitud_descripcion">"La longitud del campo no puede ser menor a 30 caracteres "</string>
+    <string name="error_longitud_pasos">"La longitud del campo no puede ser menor a 5 caracteres "</string>
+    <string name="error_numero">"El numero de veces que ha ocurrido el error no puede ser menor a 1 "</string>
+    <string name="error_longitud_titulo">"La longitud del campo no puede ser menor a 5 caracteres "</string>
+    <string name="ingresa_el_tiempo_de_recordatorio_de_postura">Ingresa el tiempo de recordatorio de postura</string>
+    <string name="espa_ol_ingles">Español/Inglés</string>
+    <string name="info_mic_permiso">Este modulo requiere permisos de microfono para funcionar</string>
+    <string name="dar_permiso">Dar Permiso</string>
+    <string name="la4_freq" translatable="false">440</string>
+    <string name="modo_afinacion">cambiar modo de afinacion</string>
+    <string name="cambiar_afinacion">cambiar afinacion</string>
+    <string name="notification_time_5min" translatable="false">00:05:00</string>
+    <string name="notification_time_2min" translatable="false">00:02:00</string>
+    <string name="empty_note_error">El valor de A4, no puede estar vacio</string>
+    <string name="invalid_note_error">El valor de A4, no puede ser mayor a 500 ni menor a 400Hz</string>
+    <string name="guest_user_prohibited">No puedes acceder a este modulo como usuario invitado</string>
+    <string name="invalid_email_info">El email ingresado no es un email valido</string>
+    <string name="invalid_password_info">La contraseña no es valida</string>
+    <string name="passwords_match_error">Las contraseñas no coinciden</string>
+    <string name="username_length_error">El nombre de usuario no puede ser menor a 5 caracteres</string>
+    <string name="selected_tuning">"Afinacion seleccionada: "</string>
+    <string name="email_type_in">Ingresa el email de la cuenta</string>
+    <string name="email_recovery_info">Si el email existe, se enviará un token de autorizacion que estará disponible durante 10 minutos</string>
+    <string name="send_code">Enviar Codigo</string>
+    <string name="cancelled">Cancelado</string>
+    <string name="cancel">Cancelar</string>
+    <string name="existing_token">Ya tengo un codigo</string>
+    <string name="token_input">Ingresa los 6 caracteres del token</string>
+    <string name="delete_tuning_error">No se pueden eliminar las afinaciones predeterminadas</string>
+    <string name="default_tunings" translatable="false">
+    "[
+        {
+          frequencies: \"[E 82.41, A 110.00, D 146.83, G 196.00, B 246.94, E 329.63, A 440]\",
+          title: \"E Standar \",
+          \"tuningId\": -1
+        },
+        {
+          frequencies: \"[Eb 77.78, Ab 103.83, Db 138.59, Gb 185.00, Bb 233.08, Eb 311.13, A 440]\",
+          title: \"Eb Standar\",
+          tuningId: -2
+        },
+        {
+          frequencies: \"[D 73.42, G 98.00, C 130.81, F 174.61, A 220.00, D 293.66, A 440]\",
+          title: \"D Standar\",
+          tuningId: -3
+        },
+        {
+          frequencies: \"[D 73.42, A 110.00, D 146.83, G 196.00, B 246.94, E 329.63, A 440]\",
+          title: \"Drop D\",
+          tuningId: -4
+        },
+        {
+          frequencies: \"[C# 69.30, Ab 103.83, Db 138.59, Gb 185.00, Bb 233.08, Eb 311.13, A 440]\",
+          title: \"Drop C#\",
+          tuningId: -5
+        },
+        {
+          frequencies: \"[C 65.41, G 98.00, C 130.81, F 174.61, A 220.00, D 293.66, A 440]\",
+          title: \"Drop C\",
+          tuningId: -6
+        }
+    ]"
+    </string>
+    <string name="tuner_mode_auto">MODO AUTOMATICO</string>
+    <string name="tuner_mode_manual">MODO MANUAL</string>
+    <string name="tuner_mode_ear">MODO DE OIDO</string>
+    <string name="tuner_tight">Aprieta!</string>
+    <string name="tuner_loosen">Afloja!</string>
+    <string name="tuner_ok" translatable="false">OK!</string>
+    <string name="crea_tu_afinacion">Crea tu Afinacion</string>
+    <string name="a4_x_hz" translatable="false">A4= X Hz</string>
+    <string name="save">Guardar</string>
+    <string name="reset">Resetear</string>
+    <string name="trashcan">Bote de Basura</string>
+    <string name="imagen_de_guitarra_electrica">Imagen de Guitarra electrica</string>
+    <string name="crear_afinacion_personalizada">Crear Afinacion Personalizada</string>
+    <string name="rhythm_looper">Reproductor en Bucle</string>
+    <string name="mic_sens_info">Una sensibilidad de 0 significa que el microfono no captura ningun sonido</string>
+    <string name="chord_library">Biblioteca de Acordes</string>
+</resources>
