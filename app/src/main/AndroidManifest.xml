@@ -20,7 +20,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m" >
         <activity
-            android:name=".MetronomeActivity"
+            android:name=".activities.metronome.MetronomeActivity"
             android:exported="false" />
         <activity
             android:name=".activities.tuner.TuningCreationActivity"
