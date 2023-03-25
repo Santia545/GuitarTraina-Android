@@ -106,5 +106,6 @@
     <string name="play">play</string>
     <string name="metronome_empty_bpm_error">The beats per minute can\'t be empty</string>
     <string name="metronome_invalid_bpm_error">The bpm can\'t be greater than 500</string>
+    <string name="pause">Pause</string>
 
 </resources>

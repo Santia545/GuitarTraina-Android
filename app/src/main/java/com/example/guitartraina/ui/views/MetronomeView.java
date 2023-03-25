@@ -7,19 +7,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 
 public class MetronomeView extends View {
-    private static final int CIRCLE_RADIUS = 60;
+    private int circleRadius;
     private static final int TEXT_SIZE = 50;
-    private OnClickListener noteListener;
     private int mNotesNumber;
-    private float[] circleCenterx ;
+    private float[] circleCenterx;
     private float[] circleCentery;
     private Paint paintCircles;
     private Paint paintText;
-
     private Integer noteIndex;
 
     public MetronomeView(Context context) {
@@ -36,24 +33,29 @@ public class MetronomeView extends View {
         super(context, attrs, defStyleAttr);
         init();
     }
-    public void setNoteOnClickListener(OnClickListener listener) {
-        this.noteListener = listener;
-    }
-    public void setNoteIndex(int noteIndex){
-        if(noteIndex>mNotesNumber-1 || noteIndex<0){
-            this.noteIndex=null;
+
+    public void setNoteIndex(int noteIndex) {
+        if (noteIndex > mNotesNumber - 1 || noteIndex < 0) {
+            this.noteIndex = null;
             invalidate();
-        }else{
-            this.noteIndex=noteIndex;
+        } else {
+            this.noteIndex = noteIndex;
             invalidate();
         }
     }
-    public void setNotesNumber(int mNotesNumber) {
-        this.mNotesNumber = mNotesNumber;
-        circleCenterx = new float[mNotesNumber];
-        circleCentery = new float[mNotesNumber];
+
+    public void setNotesNumber(int notesNumber) {
+        this.mNotesNumber = notesNumber;
+        if (notesNumber > 6) {
+            circleRadius = 40;
+        } else {
+            circleRadius = 60;
+        }
+        circleCenterx = new float[notesNumber];
+        circleCentery = new float[notesNumber];
         invalidate();
     }
+
     private void init() {
         paintCircles = new Paint();
         paintText = new Paint();
@@ -70,9 +72,10 @@ public class MetronomeView extends View {
         paintText.setTextAlign(Paint.Align.CENTER);
         paintText.setTextSize(TEXT_SIZE);
         noteIndex = null;
-        mNotesNumber=4;
+        mNotesNumber = 4;
         circleCenterx = new float[mNotesNumber];
         circleCentery = new float[mNotesNumber];
+        circleRadius = 60;
     }
 
     @Override
@@ -83,55 +86,23 @@ public class MetronomeView extends View {
         int centerY = getHeight() / 2;
         // draw tuning circles
         if (noteIndex != null) {
-            int circleX = (int) (centerX + ((double) noteIndex - 2.5) * NOTE_OFFSET);
-            canvas.drawCircle(circleX, centerY, CIRCLE_RADIUS, paintCircles);
+            int circleX = (int) (centerX + ((double) noteIndex - (mNotesNumber - 1.) / 2) * NOTE_OFFSET);
+            canvas.drawCircle(circleX, centerY, circleRadius, paintCircles);
             paintCircles.setStyle(Paint.Style.FILL);
-            paintCircles.setColor(paintText.getColor());
             paintCircles.setColor(Color.GRAY);
-            canvas.drawCircle(circleX, centerY, CIRCLE_RADIUS , paintCircles);
+            canvas.drawCircle(circleX, centerY, circleRadius, paintCircles);
             //dont draw cents in ear mode
         }
         for (int i = 0; i < mNotesNumber; i++) {
-            circleCenterx[i] = (int) (centerX + ((double) i - (double)CIRCLE_RADIUS/(mNotesNumber*10)) * NOTE_OFFSET);
+            circleCenterx[i] = (int) (centerX + ((double) i - (mNotesNumber - 1.) / 2) * NOTE_OFFSET);
             circleCentery[i] = centerY;
             paintCircles.setColor(paintText.getColor());
             paintCircles.setStyle(Paint.Style.STROKE);
             paintCircles.setStrokeWidth(10);
-            canvas.drawText(""+(i+1),circleCenterx[i],circleCentery[i],paintText);
-            canvas.drawCircle(circleCenterx[i], circleCentery[i], CIRCLE_RADIUS, paintCircles);
+            canvas.drawText("" + (i + 1), circleCenterx[i], circleCentery[i] + TEXT_SIZE / 3.f, paintText);
+            canvas.drawCircle(circleCenterx[i], circleCentery[i], circleRadius, paintCircles);
         }
-        
 
-    }
 
-    @Override
-    public boolean performClick() {
-        return super.performClick();
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent motionEvent) {
-        super.performClick();
-        if (motionEvent.getAction() != MotionEvent.ACTION_DOWN) {
-            return false;
-        }
-        float x = motionEvent.getX();
-        float y = motionEvent.getY();
-        for (int i = 0; i < mNotesNumber; i++) {
-            float centerX = circleCenterx[i];
-            float centerY = circleCentery[i];
-            float distance = (float) Math.sqrt(Math.pow(centerX - x, 2) + Math.pow(centerY - y, 2));
-            if (distance <= CIRCLE_RADIUS) {
-                if(noteIndex==i){
-                    noteIndex=null;
-                    invalidate();
-                    return true;
-                }
-                noteListener.onClick(this);
-                invalidate();
-                return true;
-            }
-        }
-        return false;
     }
 }

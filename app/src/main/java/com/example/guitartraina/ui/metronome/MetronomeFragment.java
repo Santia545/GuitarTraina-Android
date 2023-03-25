@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.guitartraina.R;
 import com.example.guitartraina.activities.metronome.Metronome;
+import com.example.guitartraina.ui.tuner.GuitarTuner;
 import com.example.guitartraina.ui.views.MetronomeView;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -32,7 +33,7 @@ public class MetronomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-         metronome = new Metronome();
+         metronome = new Metronome(requireActivity());
     }
 
     @Override
@@ -46,6 +47,15 @@ public class MetronomeFragment extends Fragment {
         metronomeView = view.findViewById(R.id.metronomeView);
         addViewOnClickListeners();
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(metronome.isRunning()){
+            metronome.pause();
+            btnPlay.setText(R.string.play);
+        }
     }
 
     private void addViewOnClickListeners() {
@@ -63,7 +73,8 @@ public class MetronomeFragment extends Fragment {
                     etBPM.getEditText().setText(R.string.defalut_bpm);
                     return true; // Consume the event
                 }
-
+                metronome.setBpm(bpm);
+                return true;
             }
             return false;
         });
@@ -73,6 +84,9 @@ public class MetronomeFragment extends Fragment {
                 String[] timeSignature = adapterView.getItemAtPosition(itemPosition).toString().split("/");
                 noteNumber = Integer.parseInt(timeSignature[0]);
                 noteType = Integer.parseInt(timeSignature[1]);
+                metronomeView.setNotesNumber(noteNumber);
+                metronome.setNotesNumber(noteNumber);
+                metronome.setNoteType(noteType);
             }
 
             @Override
@@ -81,6 +95,13 @@ public class MetronomeFragment extends Fragment {
         });
         btnPlay.setOnClickListener(view -> {
             etBPM.getEditText().onEditorAction(EditorInfo.IME_ACTION_DONE);
+            if(metronome.isRunning()){
+                btnPlay.setText(R.string.play);
+                metronome.pause();
+            }else{
+                btnPlay.setText(R.string.pause);
+                metronome.run();
+            }
         });
     }
 }

@@ -84,7 +84,7 @@ public class GuitarTunerView extends View {
         canvas.drawText(TUNING_MODE[tuningMode], centerX, 120 - TEXT_SIZE, paintText);
         // draw tuning circles
         for (int i = 0; i < STRINGS_NUMBER; i++) {
-            circleCenterx[i] = (int) (centerX + ((double) i - 2.5) * NOTE_OFFSET);
+            circleCenterx[i] = (int) (centerX + ((double) i - (STRINGS_NUMBER-1.)/2) * NOTE_OFFSET);
             circleCentery[i] = centerY;
             int colorIndex = getCentsColor(mCentsDiffs[i]);
             paintCircles.setStyle(Paint.Style.STROKE);
@@ -95,7 +95,7 @@ public class GuitarTunerView extends View {
 
         // draw note names for each string
         for (int i = 0; i < STRINGS_NUMBER; i++) {
-            int textX = (int) (centerX + ((double) i - 2.5) * NOTE_OFFSET);
+            int textX = (int) (centerX + ((double) i - (STRINGS_NUMBER-1.)/2) * NOTE_OFFSET);
             int textY = (int) (centerY - (paintText.descent() + paintText.ascent()) / 2);
             canvas.drawText(mNoteNames[i], textX, textY, paintText);
         }

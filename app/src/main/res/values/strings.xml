@@ -148,6 +148,7 @@
     <string name="play">Reproducir</string>
     <string name="metronome_empty_bpm_error">Los pulsos por minuto no pueden quedar vacios</string>
     <string name="metronome_invalid_bpm_error">El valor de los pulsos por minuto no puede ser mayor a 500</string>
+    <string name="pause">Pausar</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>
