@@ -72,8 +72,11 @@ public class Metronome {
     private void playSound(String soundType) {
         MediaPlayer mediaPlayer = MediaPlayer.create(
                 activity,
-                R.raw.metronome_piano);
-        mediaPlayer.start();
+                activity.getResources().getIdentifier(activity.getPackageName() + ":raw/metronome_"  + soundType,null,null));
+        mediaPlayer.setLooping(false);
+        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+        mediaPlayer.start()
+        ;
     }
 
 
