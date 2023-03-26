@@ -24,6 +24,7 @@ public class Metronome {
     private boolean running = false;
     private int notesNumber = 4;
     private int noteType = 4;
+    private int noteAccent=0;
 
     public Metronome(Activity activity) {
         this.activity = activity;
@@ -51,7 +52,7 @@ public class Metronome {
             try {
                 int noteNumber = index % notesNumber;
                 metronomeView.setNoteIndex(noteNumber);
-                if(noteNumber==0){
+                if(noteNumber==noteAccent){
                     playSound("forte");
                 }else{
                     playSound("piano");
@@ -100,5 +101,9 @@ public class Metronome {
             this.time = Math.round(60000.f / bpm);
         }
 
+    }
+
+    public void setNoteAccent(int noteAccent) {
+        this.noteAccent = noteAccent;
     }
 }

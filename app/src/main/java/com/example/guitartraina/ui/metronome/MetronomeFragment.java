@@ -2,6 +2,7 @@ package com.example.guitartraina.ui.metronome;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -15,7 +16,6 @@ import android.widget.Toast;
 
 import com.example.guitartraina.R;
 import com.example.guitartraina.activities.metronome.Metronome;
-import com.example.guitartraina.ui.tuner.GuitarTuner;
 import com.example.guitartraina.ui.views.MetronomeView;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -29,6 +29,7 @@ public class MetronomeFragment extends Fragment {
     private int noteNumber;
     private MetronomeView metronomeView;
     private Metronome metronome;
+    private SwitchCompat swAccent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class MetronomeFragment extends Fragment {
         etBPM = view.findViewById(R.id.beats_per_minute);
         timeSignature = view.findViewById(R.id.time_signature);
         metronomeView = view.findViewById(R.id.metronomeView);
+        swAccent = view.findViewById(R.id.switch1);
         addViewOnClickListeners();
         return view;
     }
@@ -101,6 +103,13 @@ public class MetronomeFragment extends Fragment {
             }else{
                 btnPlay.setText(R.string.pause);
                 metronome.run();
+            }
+        });
+        swAccent.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(compoundButton.isChecked()){
+                metronome.setNoteAccent(0);
+            }else{
+                metronome.setNoteAccent(-1);
             }
         });
     }
