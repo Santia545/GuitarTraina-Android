@@ -15,6 +15,7 @@
             app:key="practice_notifications_time"
             app:title="@string/notification_time"
             app:useSimpleSummaryProvider="true"
+            android:defaultValue="@string/notification_time_5min"
             />
         <SwitchPreferenceCompat
             app:key="posture_notifications"
@@ -24,7 +25,7 @@
             app:key="posture_notifications_time"
             app:title="@string/notification_time"
             app:useSimpleSummaryProvider="true"
-
+            android:defaultValue="@string/notification_time_2min"
             />
     </PreferenceCategory>
     <PreferenceCategory

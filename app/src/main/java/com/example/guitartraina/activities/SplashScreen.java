@@ -8,6 +8,7 @@ import android.os.Handler;
 
 import com.example.guitartraina.R;
 import com.example.guitartraina.activities.account.LogInActivity;
+import com.example.guitartraina.services.PostureNotificationService;
 
 
 public class SplashScreen extends AppCompatActivity {
@@ -17,6 +18,10 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
+        Intent intent = new Intent(this, PostureNotificationService.class);
+        startService(intent);
+
         /*SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String language = sharedPreferences.getString("language_default", "Not FOUND");
         Resources res =this.getResources();

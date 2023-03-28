@@ -150,6 +150,8 @@
     <string name="metronome_invalid_bpm_error">El valor de los pulsos por minuto no puede ser mayor a 500</string>
     <string name="pause">Pausar</string>
     <string name="metronome_accent">Acento</string>
+    <string name="practice_reminder">Recordatorio de Practica</string>
+    <string name="notification_practice_reminder_desc">No has alcanzado tu meta de practica diaria</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

@@ -108,5 +108,7 @@
     <string name="metronome_invalid_bpm_error">The bpm can\'t be greater than 500</string>
     <string name="pause">Pause</string>
     <string name="metronome_accent">Accent</string>
+    <string name="practice_reminder">Practice Reminder</string>
+    <string name="notification_practice_reminder_desc">You havent reached your daily practice goal</string>
 
 </resources>
