@@ -1,8 +1,10 @@
 package com.example.guitartraina.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.guitartraina.R;
+import com.example.guitartraina.services.PostureNotificationService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         com.example.guitartraina.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        Intent intent = new Intent(this, PostureNotificationService.class);
+        startService(intent);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
