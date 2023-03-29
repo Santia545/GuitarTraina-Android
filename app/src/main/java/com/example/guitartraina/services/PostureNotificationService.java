@@ -16,7 +16,7 @@ import com.example.guitartraina.R;
 
 public class PostureNotificationService extends Service {
 
-    private static final int NOTIFICATION_ID = 1;
+    private static final int NOTIFICATION_ID = 3;
     private static final String CHANNEL_ID = "posture_notification_channel";
     private static final long INTERVAL = 10 * 1000; // 5 minutes in milliseconds
 
@@ -31,7 +31,7 @@ public class PostureNotificationService extends Service {
             sendNotification();
             handler.postDelayed(runnable, INTERVAL);
         };
-        handler.post(runnable);
+        handler.postDelayed(runnable,INTERVAL);
     }
 
     @Override

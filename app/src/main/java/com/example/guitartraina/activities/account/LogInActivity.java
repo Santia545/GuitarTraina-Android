@@ -1,12 +1,9 @@
 package com.example.guitartraina.activities.account;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,8 +17,6 @@ import com.example.guitartraina.R;
 import com.example.guitartraina.activities.MainActivity;
 import com.example.guitartraina.api.IResult;
 import com.example.guitartraina.api.VolleyService;
-import com.example.guitartraina.services.PostureNotificationService;
-import com.example.guitartraina.services.PracticeNotificationService;
 import com.google.android.material.textfield.TextInputLayout;
 
 
@@ -42,14 +37,6 @@ public class LogInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getEncryptedSharedPreferences();
         if (archivo.contains("idUsuario")) {
-            if (arePracticeNotificationsEnabled() && !isPracticeServiceRunning()) {
-                Intent intent = new Intent(this, PracticeNotificationService.class);
-                startService(intent);
-            }
-            if (arePostureNotificationsEnabled()) {
-                Intent intent = new Intent(this, PostureNotificationService.class);
-                startService(intent);
-            }
             launchHomeActivity();
         }
         initVolleyCallback();
@@ -175,22 +162,10 @@ public class LogInActivity extends AppCompatActivity {
         editor.apply();
         launchHomeActivity();
     }
-    private boolean arePostureNotificationsEnabled() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPreferences.getBoolean("posture_notifications", false);
-    }
 
-    private boolean arePracticeNotificationsEnabled() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPreferences.getBoolean("practice_notifications", false);
-    }
-    private boolean isPracticeServiceRunning() {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (PracticeNotificationService.class.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

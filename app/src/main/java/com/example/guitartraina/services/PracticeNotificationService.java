@@ -1,5 +1,7 @@
 package com.example.guitartraina.services;
 
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -11,7 +13,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -27,7 +28,7 @@ import java.util.GregorianCalendar;
 public class PracticeNotificationService extends Service {
     private static final String CHANNEL_ID = "practice_notification_channel";
     private static final int NOTIFICATION_ID = 1;
-    private static final long INTERVAL = 5*1000;//5 * 60 * 1000; // 5 minutes in milliseconds
+    private static final long INTERVAL = 10*1000;//5 * 60 * 1000; // 5 minutes in milliseconds
 
     private final Handler handler= new Handler();
     private Runnable runnable;
@@ -97,9 +98,14 @@ public class PracticeNotificationService extends Service {
 
     private Notification createNotification() {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
+        intent.putExtra("SELECTED_TAB", 2); // add extra data to the intent
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK); // add flags to clear the activity stack
+        PendingIntent pendingIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT|FLAG_IMMUTABLE);
+        }else{
+            pendingIntent = PendingIntent.getActivity(this, 0, intent, -1);
+        }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ID)
                 .setSmallIcon(R.drawable.baseline_notifications_24)
                 .setContentTitle(getString(R.string.practice_notification_service_title))

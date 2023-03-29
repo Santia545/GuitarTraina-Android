@@ -54,6 +54,7 @@
             </intent-filter>
         </activity>
         <service android:name=".services.PracticeNotificationService" />
+        <service android:name=".services.PostureNotificationService" />
     </application>
 
 </manifest>
