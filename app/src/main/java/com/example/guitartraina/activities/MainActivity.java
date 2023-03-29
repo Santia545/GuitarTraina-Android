@@ -1,10 +1,8 @@
 package com.example.guitartraina.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.guitartraina.R;
-import com.example.guitartraina.services.PostureNotificationService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;

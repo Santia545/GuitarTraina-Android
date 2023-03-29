@@ -15,12 +15,14 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
+import androidx.preference.SwitchPreferenceCompat;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
 import com.example.guitartraina.R;
 import com.example.guitartraina.activities.account.LogInActivity;
 import com.example.guitartraina.activities.tuner.Tuning;
+import com.example.guitartraina.services.PracticeNotificationService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -37,6 +39,30 @@ public class ConfigurationFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.config, rootKey);
         getEncryptedSharedPreferences();
+        SwitchPreferenceCompat practiceNotifications = findPreference("practice_notifications");
+        if(practiceNotifications!=null) {
+            practiceNotifications.setOnPreferenceChangeListener((preference, newValue) -> {
+                if((Boolean) newValue){
+                    Intent intent = new Intent(requireContext(), PracticeNotificationService.class);
+                    requireActivity().startService(intent);
+                }else{
+                    requireContext().stopService(new Intent(requireContext(), PracticeNotificationService.class));
+                }
+                return true;
+            });
+        }
+        SwitchPreferenceCompat postureNotifications = findPreference("posture_notifications");
+        if(postureNotifications!=null) {
+            postureNotifications.setOnPreferenceChangeListener((preference, newValue) -> {
+                if((Boolean) newValue){
+                    Intent intent = new Intent(requireContext(), PracticeNotificationService.class);
+                    requireActivity().startService(intent);
+                }else{
+                    requireContext().stopService(new Intent(requireContext(), PracticeNotificationService.class));
+                }
+                return true;
+            });
+        }
         EditTextPreference practiceTime = findPreference("practice_notifications_time");
         if (practiceTime != null) {
             practiceTime.setOnBindEditTextListener(editText -> {
