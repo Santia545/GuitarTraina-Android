@@ -23,32 +23,6 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        if (arePracticeNotificationsEnabled() && !isMyServiceRunning(PracticeNotificationService.class)) {
-            Intent intent = new Intent(this, PracticeNotificationService.class);
-            startService(intent);
-        }
-        if (arePostureNotificationsEnabled()) {
-
-        }
-    }
-
-    private boolean arePostureNotificationsEnabled() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPreferences.getBoolean("posture_notifications", false);
-    }
-
-    private boolean arePracticeNotificationsEnabled() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return sharedPreferences.getBoolean("practice_notifications", false);
-    }
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

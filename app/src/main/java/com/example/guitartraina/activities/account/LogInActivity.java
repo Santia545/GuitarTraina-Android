@@ -1,9 +1,12 @@
 package com.example.guitartraina.activities.account;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,6 +20,8 @@ import com.example.guitartraina.R;
 import com.example.guitartraina.activities.MainActivity;
 import com.example.guitartraina.api.IResult;
 import com.example.guitartraina.api.VolleyService;
+import com.example.guitartraina.services.PostureNotificationService;
+import com.example.guitartraina.services.PracticeNotificationService;
 import com.google.android.material.textfield.TextInputLayout;
 
 
@@ -35,10 +40,21 @@ public class LogInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getEncryptedSharedPreferences();
+        if (archivo.contains("idUsuario")) {
+            if (arePracticeNotificationsEnabled() && !isPracticeServiceRunning()) {
+                Intent intent = new Intent(this, PracticeNotificationService.class);
+                startService(intent);
+            }
+            if (arePostureNotificationsEnabled()) {
+                Intent intent = new Intent(this, PostureNotificationService.class);
+                startService(intent);
+            }
+            launchHomeActivity();
+        }
         initVolleyCallback();
         volleyService = new VolleyService(resultCallback, this);
         setContentView(R.layout.activity_log_in);
-        getEncryptedSharedPreferences();
         Button loginbtn = findViewById(R.id.button);
         Button guestBtn = findViewById(R.id.button1);
         emailET = findViewById(R.id.editTextTextEmailAddress);
@@ -111,14 +127,6 @@ public class LogInActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (archivo.contains("idUsuario")) {
-            launchHomeActivity();
-        }
-    }
-
     private void launchHomeActivity() {
         Intent intent = new Intent(LogInActivity.this, MainActivity.class);
         startActivity(intent);
@@ -161,11 +169,28 @@ public class LogInActivity extends AppCompatActivity {
             }
         };
     }
-
     private void logIn(String response) {
         SharedPreferences.Editor editor = archivo.edit();
         editor.putString("idUsuario", response);
         editor.apply();
         launchHomeActivity();
+    }
+    private boolean arePostureNotificationsEnabled() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getBoolean("posture_notifications", false);
+    }
+
+    private boolean arePracticeNotificationsEnabled() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getBoolean("practice_notifications", false);
+    }
+    private boolean isPracticeServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (PracticeNotificationService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

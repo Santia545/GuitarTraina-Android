@@ -140,7 +140,7 @@ public class ConfigurationFragment extends PreferenceFragmentCompat {
         if (logIn != null) {
 
             if (archivo.contains("idUsuario")) {
-                if (!archivo.getString("idUsuario", "notlogged").equals("0")) {
+                if (!archivo.getString("idUsuario", null).equals("0")) {
                     logIn.setEnabled(false);
                 }
             }
@@ -153,13 +153,14 @@ public class ConfigurationFragment extends PreferenceFragmentCompat {
         Preference logOut = findPreference("sign_out");
         if (logOut != null) {
             if (archivo.contains("idUsuario")) {
-                if (archivo.getString("idUsuario", "notlogged").equals("0")) {
+                if (archivo.getString("idUsuario", null).equals("0")) {
                     logOut.setEnabled(false);
 
                 }
             }
             logOut.setOnPreferenceClickListener(preference -> {
                 onClickLogOut();
+
                 return true;
             });
 
@@ -191,7 +192,6 @@ public class ConfigurationFragment extends PreferenceFragmentCompat {
     private void onClickLogIn() {
         SharedPreferences.Editor editor = archivo.edit();
         editor.clear();
-        //editor.remove("idUsuario");
         editor.apply();
         Intent aux = new Intent(requireContext(), LogInActivity.class);
         startActivity(aux);
@@ -200,7 +200,6 @@ public class ConfigurationFragment extends PreferenceFragmentCompat {
 
     private void onClickLogOut() {
         SharedPreferences.Editor editor = archivo.edit();
-        //editor.remove("idUsuario");
         editor.clear();
         editor.apply();
         Intent aux = new Intent(requireContext(), LogInActivity.class);

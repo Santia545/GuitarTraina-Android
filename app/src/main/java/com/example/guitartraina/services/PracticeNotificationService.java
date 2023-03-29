@@ -3,6 +3,7 @@ package com.example.guitartraina.services;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
 import com.example.guitartraina.R;
+import com.example.guitartraina.activities.MainActivity;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -41,13 +43,11 @@ public class PracticeNotificationService extends Service {
         startForeground(2, createNotification());
         createNotificationChannel();
         runnable = ()->{
-            //DateFormat dateFormat= getTimeInstance();
             Date date = new Date();
             Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
             calendar.setTime(date);   // assigns calendar to given date
             int currentHour=calendar.get(Calendar.HOUR_OF_DAY);
             if(currentHour>11&&currentHour<22) { // gets hour in 24h format)
-                Toast.makeText(this,"noti",Toast.LENGTH_SHORT).show();
                 int reminderTime=getPracticeReminderTime();
                 int secondsPracticed = 0;
                 if (secondsPracticed < reminderTime) {
@@ -59,13 +59,10 @@ public class PracticeNotificationService extends Service {
         handler.postDelayed(runnable, INTERVAL);
         return START_STICKY;
     }
-
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("service_running_notification_channel", "Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(runnable);
     }
 
     private int getPracticeReminderTime() {
@@ -90,20 +87,28 @@ public class PracticeNotificationService extends Service {
         }
         return numbers;
     }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        handler.removeCallbacks(runnable);
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     private Notification createNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"service_running_notification_channel")
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ID)
                 .setSmallIcon(R.drawable.baseline_notifications_24)
-                .setContentTitle("Guitar Traina Practice Reminder Service")
-                .setContentText("Tap to open the app")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setContentTitle(getString(R.string.practice_notification_service_title))
+                .setContentText(getString(R.string.practice_notification_service_description))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("service_running_notification_channel", "Practice Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Practice Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }

@@ -152,6 +152,8 @@
     <string name="metronome_accent">Acento</string>
     <string name="practice_reminder">Recordatorio de Practica</string>
     <string name="notification_practice_reminder_desc">No has alcanzado tu meta de practica diaria</string>
+    <string name="practice_notification_service_title">Servicio de Recordatorio de Practica de Guitar Traina</string>
+    <string name="practice_notification_service_description">Presiona para abrir la aplicación</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

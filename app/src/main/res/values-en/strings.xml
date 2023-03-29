@@ -25,7 +25,7 @@
     <string name="reestablecer_contrase_a">Restore Password</string>
     <string name="afinador">Tuner</string>
     <string name="configuracion">Settings</string>
-    <string name="enable_posture_notifications">Enable posture</string>
+    <string name="enable_posture_notifications">Enable posture notification</string>
     <string name="afinacion_por_defecto">Default tuning</string>
     <string name="sensibilidad_del_microfono">Microphone Sensibility:</string>
     <string name="microfono">Microphone</string>
@@ -110,5 +110,7 @@
     <string name="metronome_accent">Accent</string>
     <string name="practice_reminder">Practice Reminder</string>
     <string name="notification_practice_reminder_desc">You havent reached your daily practice goal</string>
+    <string name="practice_notification_service_title">Guitar Traina Practice Reminder Service</string>
+    <string name="practice_notification_service_description">Tap to open the app</string>
 
 </resources>
