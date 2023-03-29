@@ -37,7 +37,7 @@ public class PostureNotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        startForeground(NOTIFICATION_ID, createNotification());
+        //startForeground(NOTIFICATION_ID, createNotification());
         handler = new Handler();
         runnable = ()->{
             Date date = new Date();   // given date
@@ -52,6 +52,7 @@ public class PostureNotificationService extends Service {
                     sendNotification();
                 }
             }
+            handler.postDelayed(runnable, 10* 1000); // 10 seconds in milliseconds
         };
         //handler.postDelayed(runnable, 5 * 60 * 1000); // 5 minutes in milliseconds
         handler.postDelayed(runnable, 10* 1000); // 10 seconds in milliseconds
