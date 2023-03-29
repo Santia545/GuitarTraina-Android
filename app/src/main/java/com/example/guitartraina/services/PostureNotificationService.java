@@ -1,5 +1,7 @@
 package com.example.guitartraina.services;
 
+import static java.text.DateFormat.getTimeInstance;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -37,10 +39,16 @@ public class PostureNotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //startForeground(NOTIFICATION_ID, createNotification());
+        startForeground(NOTIFICATION_ID, createNotification());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
         handler = new Handler();
         runnable = ()->{
-            Date date = new Date();   // given date
+            //DateFormat dateFormat= getTimeInstance();
+            Date date = new Date();
             Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
             calendar.setTime(date);   // assigns calendar to given date
             int currentHour=calendar.get(Calendar.HOUR_OF_DAY);
@@ -52,10 +60,9 @@ public class PostureNotificationService extends Service {
                     sendNotification();
                 }
             }
-            handler.postDelayed(runnable, 10* 1000); // 10 seconds in milliseconds
+            handler.postDelayed(runnable, 5 * 60 * 1000); // 5 minutes in milliseconds
         };
-        //handler.postDelayed(runnable, 5 * 60 * 1000); // 5 minutes in milliseconds
-        handler.postDelayed(runnable, 10* 1000); // 10 seconds in milliseconds
+        handler.postDelayed(runnable, 5 * 60 * 1000); // 5 minutes in milliseconds
         return START_STICKY;
     }
 
@@ -90,10 +97,9 @@ public class PostureNotificationService extends Service {
     private Notification createNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.baseline_notifications_24)
-                .setContentTitle("App is running")
+                .setContentTitle("Guitar Traina Practice Reminder Service")
                 .setContentText("Tap to open the app")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setOngoing(true);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
