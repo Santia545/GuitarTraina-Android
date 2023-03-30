@@ -1,19 +1,13 @@
 package com.example.guitartraina.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
 import com.example.guitartraina.R;
 import com.example.guitartraina.activities.account.LogInActivity;
-import com.example.guitartraina.services.PostureNotificationService;
-import com.example.guitartraina.services.PracticeNotificationService;
 
 
 public class SplashScreen extends AppCompatActivity {
@@ -24,7 +18,6 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-
     }
 
     @Override

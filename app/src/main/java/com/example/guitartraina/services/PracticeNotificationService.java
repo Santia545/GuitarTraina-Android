@@ -1,7 +1,4 @@
 package com.example.guitartraina.services;
-
-import static android.app.PendingIntent.FLAG_IMMUTABLE;
-
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -24,6 +21,7 @@ import com.example.guitartraina.activities.MainActivity;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.UUID;
 
 public class PracticeNotificationService extends Service {
     private static final String CHANNEL_ID = "practice_notification_channel";
@@ -99,12 +97,12 @@ public class PracticeNotificationService extends Service {
     private Notification createNotification() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("SELECTED_TAB", 2); // add extra data to the intent
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK); // add flags to clear the activity stack
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // add flags to clear the activity stack
         PendingIntent pendingIntent;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT|FLAG_IMMUTABLE);
+            pendingIntent = PendingIntent.getActivity(this, UUID.randomUUID().hashCode(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         }else{
-            pendingIntent = PendingIntent.getActivity(this, 0, intent, -1);
+            pendingIntent = PendingIntent.getActivity(this, UUID.randomUUID().hashCode(), intent, -1);
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ID)
                 .setSmallIcon(R.drawable.baseline_notifications_24)

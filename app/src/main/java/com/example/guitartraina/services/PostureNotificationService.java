@@ -24,14 +24,12 @@ public class PostureNotificationService extends Service {
 
     private final Handler handler = new Handler();
     private Runnable runnable;
-    private MyActivityLifecycleCallbacks activityCallbacks;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        activityCallbacks = new MyActivityLifecycleCallbacks(this);
-        getApplication().registerActivityLifecycleCallbacks(activityCallbacks);
         interval= getNotificationTimeFromPreferences();
+        interval = 5000;
         createNotificationChannel();
         runnable = () -> {
             sendNotification();
@@ -65,7 +63,6 @@ public class PostureNotificationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getApplication().unregisterActivityLifecycleCallbacks(activityCallbacks);
         handler.removeCallbacks(runnable);
     }
 

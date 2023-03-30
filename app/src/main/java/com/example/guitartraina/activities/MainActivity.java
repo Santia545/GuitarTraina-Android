@@ -28,7 +28,7 @@ import java.security.GeneralSecurityException;
 
 public class MainActivity extends AppCompatActivity {
     private SharedPreferences archivo;
-
+    private BottomNavigationView navView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+        navView= findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -50,10 +50,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
         // retrieve the selected tab from the intent's extras (default to the first tab)
-        int selectedTab = getIntent().getIntExtra("SELECTED_TAB", 0);
 
-        // set the selected tab using the index
-        navView.setSelectedItemId(navView.getMenu().getItem(selectedTab).getItemId());
         if (arePracticeNotificationsEnabled() && isServiceNotRunning(PracticeNotificationService.class)) {
             Intent intent = new Intent(this, PracticeNotificationService.class);
             startService(intent);
@@ -62,6 +59,20 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, PostureNotificationService.class);
             startService(intent);
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        int selectedTab = intent.getIntExtra("SELECTED_TAB", 0);
+        // set the selected tab using the index
+        navView.setSelectedItemId(navView.getMenu().getItem(selectedTab).getItemId());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 
     private boolean arePostureNotificationsEnabled() {
