@@ -29,7 +29,7 @@ public class PostureNotificationService extends Service {
     public void onCreate() {
         super.onCreate();
         interval= getNotificationTimeFromPreferences();
-        interval = 5000;
+        //interval = 5000;
         createNotificationChannel();
         runnable = () -> {
             sendNotification();

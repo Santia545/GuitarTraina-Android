@@ -72,7 +72,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        if (arePostureNotificationsEnabled() && !isServiceNotRunning(PostureNotificationService.class)) {
+            this.stopService(new Intent(this, PostureNotificationService.class));
+        }
     }
 
     private boolean arePostureNotificationsEnabled() {
