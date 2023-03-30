@@ -21,7 +21,7 @@
         tools:targetApi="m" >
         <activity
             android:name=".activities.metronome.MetronomeActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".activities.tuner.TuningCreationActivity"
             android:exported="false" />
@@ -49,7 +49,6 @@
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

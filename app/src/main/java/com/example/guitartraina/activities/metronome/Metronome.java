@@ -1,20 +1,11 @@
 package com.example.guitartraina.activities.metronome;
 
 import android.app.Activity;
-import android.media.AudioFormat;
-import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.example.guitartraina.R;
 import com.example.guitartraina.ui.views.MetronomeView;
-
-import java.io.InputStream;
-
-import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.io.TarsosDSPAudioFormat;
-import be.tarsos.dsp.io.UniversalAudioInputStream;
-import be.tarsos.dsp.io.android.AndroidAudioPlayer;
 
 public class Metronome {
     private final Activity activity;

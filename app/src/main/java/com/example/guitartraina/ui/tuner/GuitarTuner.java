@@ -9,14 +9,10 @@ import android.media.AudioRecord;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKeys;
 
 import com.example.guitartraina.R;
 import com.example.guitartraina.ui.views.GuitarTunerView;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioProcessor;
@@ -33,13 +29,12 @@ public class GuitarTuner {
     private final int SAMPLE_RATE = 44100;
     private final int RECORD_BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_IN_MONO, ENCODING_PCM_16BIT);
     private final int RECORD_BUFFER_OVERLAP = RECORD_BUFFER_SIZE / 2;
-    private SharedPreferences archivo;
+
     public GuitarTuner(Activity activity) {
         this.activity = activity;
     }
 
     public void run() {
-        getEncryptedSharedPreferences();
         double gain = getGainFromPreferences();
         int sensibility = getSensibilityFromPreferences();
         dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(SAMPLE_RATE, RECORD_BUFFER_SIZE, RECORD_BUFFER_OVERLAP);
@@ -47,8 +42,6 @@ public class GuitarTuner {
             //gets amplitude of the audio event e.getdBSPL() for ignoring quiet sounds
             GuitarTunerView guitarTunerView = activity.findViewById(R.id.guitar_tuner);
             final float pitchInHz = result.getPitch();
-            //Log.d("Values", "Gain: "+gain+" Sens: "+sensibility);
-            //Log.d("Pitch", pitchInHz +"probability: "+result.getProbability()+" loudness: "+e.getdBSPL());
             if (pitchInHz == -1 || result.getProbability() < 0.90f || e.getdBSPL()<sensibility) {
                 return;
             }
@@ -123,22 +116,6 @@ public class GuitarTuner {
             }
         }
         return index;
-    }
-    private void getEncryptedSharedPreferences() {
-        String masterKeyAlias;
-        archivo = null;
-        try {
-            masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
-            archivo = EncryptedSharedPreferences.create(
-                    "archivo",
-                    masterKeyAlias,
-                    activity,
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            );
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }
