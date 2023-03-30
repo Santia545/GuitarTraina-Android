@@ -5,12 +5,14 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import com.example.guitartraina.R;
 
@@ -18,25 +20,52 @@ public class PostureNotificationService extends Service {
 
     private static final int NOTIFICATION_ID = 3;
     private static final String CHANNEL_ID = "posture_notification_channel";
-    private static final long INTERVAL = 10 * 1000; // 5 minutes in milliseconds
+    private static int interval; // 5 minutes in milliseconds
 
     private final Handler handler = new Handler();
     private Runnable runnable;
+    private MyActivityLifecycleCallbacks activityCallbacks;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        activityCallbacks = new MyActivityLifecycleCallbacks(this);
+        getApplication().registerActivityLifecycleCallbacks(activityCallbacks);
+        interval= getNotificationTimeFromPreferences();
         createNotificationChannel();
         runnable = () -> {
             sendNotification();
-            handler.postDelayed(runnable, INTERVAL);
+            handler.postDelayed(runnable, interval);
         };
-        handler.postDelayed(runnable,INTERVAL);
+        handler.postDelayed(runnable,interval);
+    }
+
+    private int getNotificationTimeFromPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String defaultTuning = sharedPreferences.getString("posture_notifications_time", null);
+        return stringToSeconds(defaultTuning)*1000;
+    }
+    private int stringToSeconds(String practiceTime) {
+        int seconds = 0;
+        String[] date = practiceTime.split(":");
+        int[] intDate = stringArrayToIntArray(date);
+        seconds += intDate[2];
+        seconds += intDate[1] * 60;
+        seconds += intDate[0] * 3600;
+        return seconds;
+    }
+    private int[] stringArrayToIntArray(String[] splittedDate) {
+        int[] numbers = new int[splittedDate.length];
+        for (int i = 0; i < splittedDate.length; i++) {
+            numbers[i] = Integer.parseInt(splittedDate[i]);
+        }
+        return numbers;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        getApplication().unregisterActivityLifecycleCallbacks(activityCallbacks);
         handler.removeCallbacks(runnable);
     }
 

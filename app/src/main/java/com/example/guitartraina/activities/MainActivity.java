@@ -54,23 +54,16 @@ public class MainActivity extends AppCompatActivity {
 
         // set the selected tab using the index
         navView.setSelectedItemId(navView.getMenu().getItem(selectedTab).getItemId());
-        if (arePracticeNotificationsEnabled() && !isServiceRunning(PracticeNotificationService.class)) {
+        if (arePracticeNotificationsEnabled() && isServiceNotRunning(PracticeNotificationService.class)) {
             Intent intent = new Intent(this, PracticeNotificationService.class);
             startService(intent);
         }
-        if (arePostureNotificationsEnabled()) {
+        if (arePostureNotificationsEnabled() && isServiceNotRunning(PostureNotificationService.class)) {
             Intent intent = new Intent(this, PostureNotificationService.class);
             startService(intent);
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (arePostureNotificationsEnabled() && isServiceRunning(PostureNotificationService.class)) {
-            this.stopService(new Intent(this, PostureNotificationService.class));
-        }
-    }
     private boolean arePostureNotificationsEnabled() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         return sharedPreferences.getBoolean("posture_notifications", false);
@@ -81,14 +74,14 @@ public class MainActivity extends AppCompatActivity {
         return sharedPreferences.getBoolean("practice_notifications", false);
     }
 
-    private boolean isServiceRunning(Class<?> serviceClass) {
+    private boolean isServiceNotRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
     private void getEncryptedSharedPreferences() {
         String masterKeyAlias;

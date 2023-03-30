@@ -28,7 +28,7 @@ import java.util.GregorianCalendar;
 public class PracticeNotificationService extends Service {
     private static final String CHANNEL_ID = "practice_notification_channel";
     private static final int NOTIFICATION_ID = 1;
-    private static final long INTERVAL = 10*1000;//5 * 60 * 1000; // 5 minutes in milliseconds
+    private static final int INTERVAL = 3600000;//1 hour in miliseconds
 
     private final Handler handler= new Handler();
     private Runnable runnable;

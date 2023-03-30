@@ -22,6 +22,7 @@ import androidx.security.crypto.MasterKeys;
 import com.example.guitartraina.R;
 import com.example.guitartraina.activities.account.LogInActivity;
 import com.example.guitartraina.activities.tuner.Tuning;
+import com.example.guitartraina.services.PostureNotificationService;
 import com.example.guitartraina.services.PracticeNotificationService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -55,10 +56,10 @@ public class ConfigurationFragment extends PreferenceFragmentCompat {
         if(postureNotifications!=null) {
             postureNotifications.setOnPreferenceChangeListener((preference, newValue) -> {
                 if((Boolean) newValue){
-                    Intent intent = new Intent(requireContext(), PracticeNotificationService.class);
+                    Intent intent = new Intent(requireContext(), PostureNotificationService.class);
                     requireActivity().startService(intent);
                 }else{
-                    requireContext().stopService(new Intent(requireContext(), PracticeNotificationService.class));
+                    requireContext().stopService(new Intent(requireContext(), PostureNotificationService.class));
                 }
                 return true;
             });
