@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.media.AudioFormat;
 import android.media.AudioTrack;
 import android.media.MediaPlayer;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.example.guitartraina.R;
@@ -24,7 +26,7 @@ public class Metronome {
     private boolean running = false;
     private int notesNumber = 4;
     private int noteType = 4;
-    private int noteAccent=0;
+    private int noteAccent = 0;
 
     public Metronome(Activity activity) {
         this.activity = activity;
@@ -48,32 +50,34 @@ public class Metronome {
     public void run() {
         running = true;
         MetronomeView metronomeView = activity.findViewById(R.id.metronomeView);
-        Runnable playSound = () -> {
-            try {
+        Handler handler = new Handler();
+        Runnable playSound = new Runnable() {
+            @Override
+            public void run() {
+                long nextTime=SystemClock.uptimeMillis() + time;
+                Log.d("Time", SystemClock.uptimeMillis()+"" );
                 int noteNumber = index % notesNumber;
                 metronomeView.setNoteIndex(noteNumber);
-                if(noteNumber==noteAccent){
+                if (noteNumber == noteAccent) {
                     playSound("forte");
-                }else{
+                } else {
                     playSound("piano");
                 }
-                Log.d("Time", System.currentTimeMillis() + " " + index);
-                Thread.sleep(time);
+                //Log.d("Time", SystemClock.uptimeMillis()+"" );
                 index++;
                 if (running) {
-                    new Thread(Thread.currentThread()).start();
+                    handler.postAtTime(this, nextTime);
                 }
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
         };
-        new Thread(playSound, "launch thread").start();
+        handler.postAtTime(playSound, SystemClock.uptimeMillis()+time);
+
     }
 
     private void playSound(String soundType) {
         MediaPlayer mediaPlayer = MediaPlayer.create(
                 activity,
-                activity.getResources().getIdentifier(activity.getPackageName() + ":raw/metronome_"  + soundType,null,null));
+                activity.getResources().getIdentifier(activity.getPackageName() + ":raw/metronome_" + soundType, null, null));
         mediaPlayer.setLooping(false);
         mediaPlayer.setOnCompletionListener(MediaPlayer::release);
         mediaPlayer.start();

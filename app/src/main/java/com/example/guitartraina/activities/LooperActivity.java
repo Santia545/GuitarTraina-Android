@@ -22,14 +22,15 @@ public class LooperActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_looper);
 
-        webView = (WebView) findViewById(R.id.webview);
+        webView = findViewById(R.id.webview);
+
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient());
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-
-
+        webView.loadUrl("file:///android_asset/index.html");
+/*
         String videoId = "Sb5aq5HcS1A";
         String videoUrl = "https://www.youtube.com/embed/" + videoId + "?enablejsapi=1";
 
@@ -44,12 +45,9 @@ public class LooperActivity extends AppCompatActivity {
         layoutParams.width = webViewWidth;
         layoutParams.height = webViewHeight;
         webView.setLayoutParams(layoutParams);
-        playVideo(videoId);
+        playVideo(videoId);*/
     }
-    private void playVideo(String videoId) {
-        String iframe = "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/oH7IHDVzE7Q?enablejsapi=1&origin=https%3A%2F%2Fwww.looper.tube&widgetid=1\" frameborder=\"0\" allowfullscreen=\"1\"></iframe>";
-        webView.loadData(iframe, "text/html", "utf-8");
-    }
+
     @Override
     public void onBackPressed() {
         if (webView.canGoBack()) {
