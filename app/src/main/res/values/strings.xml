@@ -150,6 +150,12 @@
     <string name="metronome_invalid_bpm_error">El valor de los pulsos por minuto no puede ser mayor a 500</string>
     <string name="pause">Pausar</string>
     <string name="metronome_accent">Acento</string>
+    <string name="crear_sesion">Crear Sesion</string>
+    <string name="unirme_a_sesion">Unirme a Sesion</string>
+    <string name="compartir_10_afinacion">Compartir\nafinacion</string>
+    <string name="compartir_audio">Compartir Audio</string>
+    <string name="compartir_10_metronomo">Compartir\nMetronomo</string>
+    <string name="salir_de_sesi_n">Salir de Sesión</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>
