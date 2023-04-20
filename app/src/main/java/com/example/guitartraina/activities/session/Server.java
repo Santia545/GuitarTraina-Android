@@ -1,19 +1,21 @@
 package com.example.guitartraina.activities.session;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Server {
+public class Server extends Thread {
 
     private List<Socket> clients = new ArrayList<>();
     private ServerSocket serverSocket;
     private boolean running = false;
 
-    public void start() {
+    public void run() {
         running = true;
         // Listen for incoming TCP connections
         try {
@@ -22,15 +24,18 @@ public class Server {
                 Socket clientSocket = serverSocket.accept();
                 clients.add(clientSocket);
                 new ClientHandler(clientSocket).start();
+                OutputStream outputStream = clientSocket.getOutputStream();
+                DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+                dataOutputStream.writeUTF("connected");
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            stop();
+            stopServer();
         }
     }
 
-    public void stop() {
+    public void stopServer() {
         running = false;
 
         // Close server socket and all client sockets
@@ -65,7 +70,7 @@ public class Server {
     private class ClientHandler extends Thread {
 
         private Socket clientSocket;
-        private boolean running = true;
+        private volatile boolean running = true;
 
         public ClientHandler(Socket clientSocket) {
             this.clientSocket = clientSocket;

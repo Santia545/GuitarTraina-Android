@@ -26,10 +26,17 @@ public class MediaPlayerActivity extends AppCompatActivity {
         soundId = soundPool.load(this, R.raw.string0, 1);
 
         // Start AsyncTask to listen for data on the TCP socket
-        new SocketListener(data -> {
-            Toast.makeText(MediaPlayerActivity.this, "Data recieved" + data.toString(), Toast.LENGTH_SHORT).show();
-            soundPool.play(soundId, 1.0f, 1.0f, 0, 0, 1.0f);
-        }, "192.168.1.254").start();
+        new SocketListener(new IData() {
+            @Override
+            public void notifyData(Object data) {
+                Toast.makeText(MediaPlayerActivity.this, "Conectado" + data.toString(), Toast.LENGTH_SHORT).show();
+
+            }
+            @Override
+            public void notifyError(String error) {
+                Toast.makeText(MediaPlayerActivity.this, "Error" +error, Toast.LENGTH_SHORT).show();
+            }
+        }, "192.168.1.103").start();
     }
 
 }
