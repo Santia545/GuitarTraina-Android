@@ -20,7 +20,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
-            android:name=".activities.SessionActivity"
+            android:name=".activities.session.SessionActivity"
             android:exported="false" />
         <activity
             android:name=".activities.LooperActivity"

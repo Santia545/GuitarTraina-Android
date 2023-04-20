@@ -108,5 +108,12 @@
     <string name="metronome_invalid_bpm_error">The bpm can\'t be greater than 500</string>
     <string name="pause">Pause</string>
     <string name="metronome_accent">Accent</string>
+    <string name="crear_sesion">Create Session</string>
+    <string name="unirme_a_sesion">Join Session</string>
+    <string name="compartir_10_afinacion">Share Tuning</string>
+    <string name="compartir_audio">Share Audio</string>
+    <string name="compartir_10_metronomo">Share\nMetronome</string>
+    <string name="salir_de_sesi_n">Exit Session</string>
+    <string name="server_listening_on_ip">Server listening on ip:\n</string>
 
 </resources>

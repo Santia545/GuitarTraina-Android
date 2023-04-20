@@ -156,6 +156,7 @@
     <string name="compartir_audio">Compartir Audio</string>
     <string name="compartir_10_metronomo">Compartir\nMetronomo</string>
     <string name="salir_de_sesi_n">Salir de Sesión</string>
+    <string name="server_listening_on_ip">Server iniciado en la ip:\n</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

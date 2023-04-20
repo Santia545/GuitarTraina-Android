@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.example.guitartraina.R;
 import com.example.guitartraina.activities.BugReportActivity;
 import com.example.guitartraina.activities.LooperActivity;
-import com.example.guitartraina.activities.SessionActivity;
+import com.example.guitartraina.activities.session.SessionActivity;
 import com.example.guitartraina.activities.metronome.MetronomeActivity;
 import com.example.guitartraina.databinding.FragmentDashboardBinding;
 import com.google.android.material.navigation.NavigationView;
