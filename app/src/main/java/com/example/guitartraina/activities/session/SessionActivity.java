@@ -1,6 +1,7 @@
 package com.example.guitartraina.activities.session;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
@@ -33,13 +34,13 @@ public class SessionActivity extends AppCompatActivity {
     private Button btnScanServers;
     private TextView scannerStatus;
     private ServersRVAdapter serversRVAdapter;
-    private List<String> servers= new ArrayList<String>();
+    private List<String> servers = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session);
-        serversRVAdapter=new ServersRVAdapter(servers);
+        serversRVAdapter = new ServersRVAdapter(servers);
         dialog = createDialogAlert();
         btnCreateSession = findViewById(R.id.btnCreateSession);
         btnJoinSession = findViewById(R.id.btnJoinSession);
@@ -52,7 +53,12 @@ public class SessionActivity extends AppCompatActivity {
         btnShareMetronome.setEnabled(false);
         btnExitSession.setEnabled(false);
         txtIp = findViewById(R.id.txtIp);
-        scanServersInNetwork();
+        btnScanServers.setOnClickListener(view -> {
+            view.setEnabled(false);
+            serversRVAdapter.notifyItemRangeRemoved(0, servers.size());
+            servers.removeAll(servers);
+            scanServersInNetwork();
+        });
 
         btnCreateSession.setOnClickListener(view -> {
             if (server != null) {
@@ -69,6 +75,9 @@ public class SessionActivity extends AppCompatActivity {
             toggleSessionButtons(true);
         });
         btnJoinSession.setOnClickListener(view -> {
+            if (!scannerStatus.getText().equals(getString(R.string.scanning_servers))) {
+                scanServersInNetwork();
+            }
             dialog.show();
             //connectToSv("192.168.1.79");
         });
@@ -101,9 +110,11 @@ public class SessionActivity extends AppCompatActivity {
         networkScanner.scanNetwork(new NetworkScanner.ScanListener() {
             @Override
             public void onDeviceFound(InetAddress deviceAddress) {
-                runOnUiThread(() -> Toast.makeText(SessionActivity.this, "Ip:" + deviceAddress.toString(), Toast.LENGTH_SHORT).show());
-                servers.add(deviceAddress.toString());
-                serversRVAdapter.notify();
+                runOnUiThread(() -> {
+                    Toast.makeText(SessionActivity.this, "Ip:" + deviceAddress.toString(), Toast.LENGTH_SHORT).show();
+                    servers.add(deviceAddress.toString());
+                    serversRVAdapter.notifyItemInserted(servers.size() - 1);
+                });
             }
 
             @Override
@@ -121,11 +132,14 @@ public class SessionActivity extends AppCompatActivity {
         LayoutInflater factory = LayoutInflater.from(this);
         View deleteDialogView = factory.inflate(R.layout.dialog_local_servers, null);
         RecyclerView recyclerView = deleteDialogView.findViewById(R.id.recyclerViewServers);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(false);
         recyclerView.setAdapter(serversRVAdapter);
         btnScanServers = deleteDialogView.findViewById(R.id.server_scan_btn);
         scannerStatus = deleteDialogView.findViewById(R.id.scanner_status);
         AlertDialog.Builder builder = new AlertDialog.Builder(this).setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.cancel());
-        builder.setTitle("Servidores en la red local");
+        builder.setTitle(R.string.local_servers);
         builder.setView(deleteDialogView);
         return builder.create();
     }

@@ -158,9 +158,10 @@
     <string name="salir_de_sesi_n">Salir de Sesión</string>
     <string name="server_listening_on_ip">Server iniciado en la ip:\n</string>
     <string name="scan_for_servers">Buscar servidores</string>
-    <string name="scanning_servers">Escaneando servidores:</string>
+    <string name="scanning_servers">Escaneando servidores…</string>
     <string name="found_servers">Servidores encontrados:</string>
     <string name="connecting_to_server">Conectando al server…</string>
+    <string name="local_servers">Servidores en la red local</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

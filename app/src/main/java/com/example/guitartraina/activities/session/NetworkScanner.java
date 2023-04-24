@@ -56,7 +56,7 @@ public class NetworkScanner {
                     try {
                         InetAddress inetAddress = InetAddress.getByName(host);
                         if (inetAddress.isReachable(50)) {
-                            Log.d("Ip", "trying to reach: " + host);
+                            Log.d("Ip", "reachable: " + host);
 
                             // Check if the specified port is open on the device
                             if (isPortOpen(inetAddress, port)) {

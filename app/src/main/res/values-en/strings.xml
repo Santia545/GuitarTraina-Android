@@ -116,8 +116,9 @@
     <string name="salir_de_sesi_n">Exit Session</string>
     <string name="server_listening_on_ip">Server listening on ip:\n</string>
     <string name="scan_for_servers">scan for servers</string>
-    <string name="scanning_servers">Scanning servers</string>
+    <string name="scanning_servers">Scanning servers…</string>
     <string name="found_servers">Servers found:</string>
     <string name="connecting_to_server">Connecting to server…</string>
+    <string name="local_servers">Local Servers</string>
 
 </resources>
