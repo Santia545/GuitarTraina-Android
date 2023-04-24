@@ -48,24 +48,29 @@ public class NetworkScanner {
             super.run();
             String ip = "" + getLocalIpAddress();
             String pattern = "\\d+$";
-            ip = ip.replaceAll(pattern, "");
+            String localNet = ip.replaceAll(pattern, "");
             for (int i = 1; i < 255; i++) {
-                String host = ip + i;
-                try {
-                    InetAddress inetAddress = InetAddress.getByName(host);
-                    if (inetAddress.isReachable(100)) {
-                        // Check if the specified port is open on the device
-                        if (isPortOpen(inetAddress, port)) {
-                            deviceAddresses.add(inetAddress);
-                            if (listener != null) {
-                                listener.onDeviceFound(inetAddress);
+                String host = localNet + i;
+                if (!ip.equals(host)) {
+                    Log.d("Ip", "trying to reach: " + host);
+                    try {
+                        InetAddress inetAddress = InetAddress.getByName(host);
+                        if (inetAddress.isReachable(50)) {
+                            Log.d("Ip", "trying to reach: " + host);
+
+                            // Check if the specified port is open on the device
+                            if (isPortOpen(inetAddress, port)) {
+                                deviceAddresses.add(inetAddress);
+                                if (listener != null) {
+                                    listener.onDeviceFound(inetAddress);
+                                }
                             }
                         }
+                    } catch (UnknownHostException e) {
+                        Log.e(TAG, "UnknownHostException: " + e.getMessage());
+                    } catch (IOException e) {
+                        Log.e(TAG, "IOException: " + e.getMessage());
                     }
-                } catch (UnknownHostException e) {
-                    Log.e(TAG, "UnknownHostException: " + e.getMessage());
-                } catch (IOException e) {
-                    Log.e(TAG, "IOException: " + e.getMessage());
                 }
             }
             if (listener != null) {
@@ -85,6 +90,7 @@ public class NetworkScanner {
                 return false;
             }
         }
+
 
         public String getLocalIpAddress() {
             try {

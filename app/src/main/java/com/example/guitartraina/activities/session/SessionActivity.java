@@ -1,21 +1,27 @@
 package com.example.guitartraina.activities.session;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.guitartraina.R;
+import com.example.guitartraina.ui.views.adapter.ServersRVAdapter;
+import com.example.guitartraina.ui.views.adapter.TuningsRVAdapter;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 public class SessionActivity extends AppCompatActivity {
     private Button btnCreateSession, btnJoinSession, btnShareTuning, btnShareAudio, btnShareMetronome, btnExitSession;
@@ -24,10 +30,17 @@ public class SessionActivity extends AppCompatActivity {
     private SocketListener socketListener = null;
     private AlertDialog dialog;
 
+    private Button btnScanServers;
+    private TextView scannerStatus;
+    private ServersRVAdapter serversRVAdapter;
+    private List<String> servers= new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session);
+        serversRVAdapter=new ServersRVAdapter(servers);
+        dialog = createDialogAlert();
         btnCreateSession = findViewById(R.id.btnCreateSession);
         btnJoinSession = findViewById(R.id.btnJoinSession);
         btnShareTuning = findViewById(R.id.btnShareTuning);
@@ -40,7 +53,7 @@ public class SessionActivity extends AppCompatActivity {
         btnExitSession.setEnabled(false);
         txtIp = findViewById(R.id.txtIp);
         scanServersInNetwork();
-        dialog = createDialogAlert();
+
         btnCreateSession.setOnClickListener(view -> {
             if (server != null) {
                 Toast.makeText(SessionActivity.this, "Server Already Started", Toast.LENGTH_SHORT).show();
@@ -57,6 +70,7 @@ public class SessionActivity extends AppCompatActivity {
         });
         btnJoinSession.setOnClickListener(view -> {
             dialog.show();
+            //connectToSv("192.168.1.79");
         });
         btnExitSession.setOnClickListener(view -> {
             if (socketListener != null) {
@@ -82,38 +96,42 @@ public class SessionActivity extends AppCompatActivity {
 
     private void scanServersInNetwork() {
         NetworkScanner networkScanner = new NetworkScanner(5000);
+        scannerStatus.setText(getString(R.string.scanning_servers));
+        btnScanServers.setEnabled(false);
         networkScanner.scanNetwork(new NetworkScanner.ScanListener() {
             @Override
             public void onDeviceFound(InetAddress deviceAddress) {
                 runOnUiThread(() -> Toast.makeText(SessionActivity.this, "Ip:" + deviceAddress.toString(), Toast.LENGTH_SHORT).show());
+                servers.add(deviceAddress.toString());
+                serversRVAdapter.notify();
             }
 
             @Override
             public void onScanComplete() {
                 runOnUiThread(() -> {
-                    dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(true);
                     Toast.makeText(SessionActivity.this, "Scan Finalizado", Toast.LENGTH_SHORT).show();
+                    scannerStatus.setText(getString(R.string.found_servers));
+                    btnScanServers.setEnabled(true);
                 });
             }
         });
     }
 
     private AlertDialog createDialogAlert() {
-        String[] items = {"192.168.1.103", "192.168.1.104", "192.168.1.105","3","4","5"};
+        LayoutInflater factory = LayoutInflater.from(this);
+        View deleteDialogView = factory.inflate(R.layout.dialog_local_servers, null);
+        RecyclerView recyclerView = deleteDialogView.findViewById(R.id.recyclerViewServers);
+        recyclerView.setAdapter(serversRVAdapter);
+        btnScanServers = deleteDialogView.findViewById(R.id.server_scan_btn);
+        scannerStatus = deleteDialogView.findViewById(R.id.scanner_status);
         AlertDialog.Builder builder = new AlertDialog.Builder(this).setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.cancel());
-        builder.setNeutralButton("Refresh list", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-
-            }
-        });
         builder.setTitle("Servidores en la red local");
-        //builder.setMessage("Select an item from the list:");
-        builder.setItems(items, (dialog, which) -> connectToSv(items[which]));
+        builder.setView(deleteDialogView);
         return builder.create();
     }
 
     private void connectToSv(String ip) {
-        txtIp.setText("Connecting to server...");
+        txtIp.setText(R.string.connecting_to_server);
         btnJoinSession.setEnabled(false);
         btnCreateSession.setEnabled(false);
         if (socketListener != null || server != null) {
@@ -179,6 +197,11 @@ public class SessionActivity extends AppCompatActivity {
         if (server != null) {
             server.stopServer();
             server = null;
+        }
+        if (socketListener != null) {
+            if (socketListener.isAlive()) {
+                socketListener.setRunning(false);
+            }
         }
     }
 }

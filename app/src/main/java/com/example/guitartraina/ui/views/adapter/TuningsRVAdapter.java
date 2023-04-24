@@ -31,7 +31,7 @@ public class TuningsRVAdapter extends RecyclerView.Adapter<TuningsRVAdapter.Tuni
         final TextView tvNoteNames;
         TuningViewHolder(View itemView){
             super(itemView);
-            cardView = itemView.findViewById(R.id.item);
+            cardView = itemView.findViewById(R.id.item_tuning);
             tvTitle=itemView.findViewById(R.id.tuning_title);
             tvNoteNames=itemView.findViewById(R.id.tuning_notes);
         }
@@ -62,7 +62,7 @@ public class TuningsRVAdapter extends RecyclerView.Adapter<TuningsRVAdapter.Tuni
     @NonNull
     @Override
     public TuningViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tuning,parent,false);
         TuningViewHolder tuningViewHolder = new TuningViewHolder(view);
         tuningViewHolder.itemView.setOnClickListener(view1 -> {
             if(onChangeTuningClickListener==null){
