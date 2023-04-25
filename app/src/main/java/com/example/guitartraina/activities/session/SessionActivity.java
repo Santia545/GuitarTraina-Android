@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.example.guitartraina.R;
 import com.example.guitartraina.ui.views.adapter.ServersRVAdapter;
-import com.example.guitartraina.ui.views.adapter.TuningsRVAdapter;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -34,7 +33,7 @@ public class SessionActivity extends AppCompatActivity {
     private Button btnScanServers;
     private TextView scannerStatus;
     private ServersRVAdapter serversRVAdapter;
-    private List<String> servers = new ArrayList<String>();
+    private final List<String> servers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,7 @@ public class SessionActivity extends AppCompatActivity {
         btnScanServers.setOnClickListener(view -> {
             view.setEnabled(false);
             serversRVAdapter.notifyItemRangeRemoved(0, servers.size());
-            servers.removeAll(servers);
+            servers.clear();
             scanServersInNetwork();
         });
 
@@ -76,6 +75,8 @@ public class SessionActivity extends AppCompatActivity {
         });
         btnJoinSession.setOnClickListener(view -> {
             if (!scannerStatus.getText().equals(getString(R.string.scanning_servers))) {
+                serversRVAdapter.notifyItemRangeRemoved(0, servers.size());
+                servers.clear();
                 scanServersInNetwork();
             }
             dialog.show();
@@ -112,8 +113,12 @@ public class SessionActivity extends AppCompatActivity {
             public void onDeviceFound(InetAddress deviceAddress) {
                 runOnUiThread(() -> {
                     Toast.makeText(SessionActivity.this, "Ip:" + deviceAddress.toString(), Toast.LENGTH_SHORT).show();
-                    servers.add(deviceAddress.toString());
+                    servers.add(deviceAddress.toString().replace("/",""));
                     serversRVAdapter.notifyItemInserted(servers.size() - 1);
+                    serversRVAdapter.setOnClickListener(view -> {
+                        connectToSv(servers.get(serversRVAdapter.getItem()));
+                        dialog.dismiss();
+                    });
                 });
             }
 
@@ -145,13 +150,14 @@ public class SessionActivity extends AppCompatActivity {
     }
 
     private void connectToSv(String ip) {
-        txtIp.setText(R.string.connecting_to_server);
-        btnJoinSession.setEnabled(false);
-        btnCreateSession.setEnabled(false);
+
         if (socketListener != null || server != null) {
             Toast.makeText(SessionActivity.this, "Can't connect to a new server while being on a session", Toast.LENGTH_SHORT).show();
             return;
         }
+        txtIp.setText(R.string.connecting_to_server);
+        btnJoinSession.setEnabled(false);
+        btnCreateSession.setEnabled(false);
         socketListener = new SocketListener(new IData() {
             @Override
             public void notifyData(Object data) {

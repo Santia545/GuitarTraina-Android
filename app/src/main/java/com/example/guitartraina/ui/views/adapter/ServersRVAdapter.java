@@ -52,7 +52,7 @@ public class ServersRVAdapter extends RecyclerView.Adapter<ServersRVAdapter.Tuni
     @NonNull
     @Override
     public TuningViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tuning,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_server,parent,false);
         TuningViewHolder tuningViewHolder = new TuningViewHolder(view);
         tuningViewHolder.itemView.setOnClickListener(view1 -> {
             if(onClickListener==null){
