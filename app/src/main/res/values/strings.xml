@@ -150,6 +150,28 @@
     <string name="metronome_invalid_bpm_error">El valor de los pulsos por minuto no puede ser mayor a 500</string>
     <string name="pause">Pausar</string>
     <string name="metronome_accent">Acento</string>
-
+    <string name="root_note">Nota Fundamental</string>
+    <string name="chord_type">Tipo de Acorde</string>
+    <string-array name="notes">
+        <item>La</item>
+        <item>La#</item>
+        <item>Si</item>
+        <item>Do</item>
+        <item>Do#</item>
+        <item>Re</item>
+        <item>Re#</item>
+        <item>Mi</item>
+        <item>Fa</item>
+        <item>Fa#</item>
+        <item>Sol</item>
+        <item>Sol#</item>
+    </string-array>
+    <string-array name="chords">
+        <item>Mayor</item>
+        <item>Menor</item>
+        <item>5</item>
+        <item>7</item>
+        <item>7m</item>
+    </string-array>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

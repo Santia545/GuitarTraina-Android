@@ -108,5 +108,28 @@
     <string name="metronome_invalid_bpm_error">The bpm can\'t be greater than 500</string>
     <string name="pause">Pause</string>
     <string name="metronome_accent">Accent</string>
+    <string name="root_note">Root Note</string>
+    <string name="chord_type">Chord Type</string>
+    <string-array name="notes">
+        <item>A</item>
+        <item>A#</item>
+        <item>B</item>
+        <item>C</item>
+        <item>C#</item>
+        <item>D</item>
+        <item>D#</item>
+        <item>E</item>
+        <item>F</item>
+        <item>F#</item>
+        <item>G</item>
+        <item>G#</item>
+    </string-array>
 
+    <string-array name="chords">
+        <item>Major</item>
+        <item>Minor</item>
+        <item>5</item>
+        <item>7</item>
+        <item>7m</item>
+    </string-array>
 </resources>
