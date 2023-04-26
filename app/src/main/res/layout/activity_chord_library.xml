@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.70" />
+        app:layout_constraintGuide_percent="0.7" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -33,50 +33,53 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/root_note"
-            app:layout_constraintBottom_toTopOf="@+id/beats_per_minute"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toTopOf="@+id/root_note"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
-            android:id="@+id/beats_per_minute"
+            android:id="@+id/root_note"
             style="@style/Widget.AppCompat.Spinner.DropDown"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:defaultValue="@array/notes"
             android:entries="@array/notes"
-            app:layout_constraintBottom_toTopOf="@id/time_signature"
+            app:layout_constraintBottom_toTopOf="@id/chord_type"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/chord_type"
-            app:layout_constraintBottom_toTopOf="@+id/time_signature"
+            android:textSize="17sp"
+
+            app:layout_constraintBottom_toTopOf="@+id/chord_type"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/beats_per_minute" />
+            app:layout_constraintTop_toBottomOf="@+id/root_note" />
         <Spinner
-            android:id="@+id/time_signature"
+            android:id="@+id/chord_type"
             style="@style/Widget.AppCompat.Spinner.DropDown"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:defaultValue="@array/chords"
             android:entries="@array/chords"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/beats_per_minute" />
+            app:layout_constraintTop_toBottomOf="@id/root_note" />
 
         <androidx.constraintlayout.widget.Barrier
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="left"
-            app:constraint_referenced_ids="beats_per_minute" />
+            app:constraint_referenced_ids="root_note" />
 
         <androidx.constraintlayout.widget.Barrier
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="right"
-            app:constraint_referenced_ids="beats_per_minute" />
+            app:constraint_referenced_ids="root_note" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -85,14 +88,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.33" />
+        app:layout_constraintGuide_percent="0.35" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.66" />
+        app:layout_constraintGuide_percent="0.85" />
 
+    <TextView
+        android:id="@+id/fret_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guideline10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline9"
+        app:layout_constraintVertical_bias="0.20" />
 
     <ImageView
         android:id="@+id/chordView"
