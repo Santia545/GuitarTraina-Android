@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.guitartraina.R;
 import com.example.guitartraina.activities.BugReportActivity;
+import com.example.guitartraina.activities.ChordLibraryActivity;
 import com.example.guitartraina.activities.LooperActivity;
 import com.example.guitartraina.activities.metronome.MetronomeActivity;
 import com.example.guitartraina.databinding.FragmentDashboardBinding;
@@ -47,6 +48,8 @@ public class DashboardFragment extends Fragment {
                 Intent rythmLooper = new Intent(requireContext(), LooperActivity.class);
                 startActivity(rythmLooper);
             } else if (itemId == R.id.navigation_chord_library) {
+                Intent chordLibrary = new Intent(requireContext(), ChordLibraryActivity.class);
+                startActivity(chordLibrary);
             } else if (itemId == R.id.navigation_progreso) {
             } else if (itemId == R.id.navigation_ranking) {
             } else if (itemId == R.id.navigation_unranked) {

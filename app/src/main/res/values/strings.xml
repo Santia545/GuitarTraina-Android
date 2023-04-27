@@ -152,6 +152,7 @@
     <string name="metronome_accent">Acento</string>
     <string name="root_note">Nota Fundamental</string>
     <string name="chord_type">Tipo de Acorde</string>
+    <string name="capo_barre_chord">Toca con capo o con cejilla en el traste indicado</string>
     <string-array name="notes">
         <item>La</item>
         <item>La#</item>
