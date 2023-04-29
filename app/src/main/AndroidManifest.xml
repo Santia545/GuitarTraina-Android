@@ -21,10 +21,10 @@
         tools:targetApi="m">
         <activity
             android:name=".activities.ChordLibraryActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".activities.LooperActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".activities.metronome.MetronomeActivity"
             android:exported="false" />
