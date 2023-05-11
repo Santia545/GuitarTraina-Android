@@ -72,7 +72,7 @@ public class ChordLibraryActivity extends AppCompatActivity {
                     note = note.replaceAll("\\W", "");
                 }
                 if (drawableListIterator.nextIndex() != 0) {
-                    int diagramIndex=drawableListIterator.nextIndex() - 1;
+                    int diagramIndex = drawableListIterator.nextIndex() - 1;
                     if (!chordType.getSelectedItem().equals("5")) {
                         if (diagramIndex == 1 || diagramIndex == 3) {
                             int fret = findFretStartingThree(diagramIndexString[diagramIndex]) - 3;
@@ -83,10 +83,11 @@ public class ChordLibraryActivity extends AppCompatActivity {
                                 fretIndicator.setText("");
                                 barreChordWarning.setVisibility(View.INVISIBLE);
                             }
+                            return;
                         }
-                    } else {
-                        setFret(diagramIndexString[diagramIndex]);
+
                     }
+                    setFret(diagramIndexString[diagramIndex]);
                 } else {
                     setFret(6);
                 }
