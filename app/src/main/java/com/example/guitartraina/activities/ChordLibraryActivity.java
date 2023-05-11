@@ -50,7 +50,7 @@ public class ChordLibraryActivity extends AppCompatActivity {
         currentTheme.resolveAttribute(android.R.attr.colorBackground, typedValue, true);
         backgroundColor = typedValue.data;
         String[] notes = getResources().getStringArray(R.array.notes);
-        for (int i = 0; i <= notes.length+3; i++) {
+        for (int i = 0; i <= notes.length + 3; i++) {
             sixthStringNotes[i] = notes[(7 + i) % notes.length];
             fifthStringNotes[i] = notes[i % notes.length];
             fourthStringNotes[i] = notes[(5 + i) % notes.length];
@@ -72,7 +72,21 @@ public class ChordLibraryActivity extends AppCompatActivity {
                     note = note.replaceAll("\\W", "");
                 }
                 if (drawableListIterator.nextIndex() != 0) {
-                    setFret(diagramIndexString[drawableListIterator.nextIndex() - 1]);
+                    int diagramIndex=drawableListIterator.nextIndex() - 1;
+                    if (!chordType.getSelectedItem().equals("5")) {
+                        if (diagramIndex == 1 || diagramIndex == 3) {
+                            int fret = findFretStartingThree(diagramIndexString[diagramIndex]) - 3;
+                            if (fret != 0) {
+                                fretIndicator.setText(String.valueOf(fret));
+                                barreChordWarning.setVisibility(View.VISIBLE);
+                            } else {
+                                fretIndicator.setText("");
+                                barreChordWarning.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    } else {
+                        setFret(diagramIndexString[diagramIndex]);
+                    }
                 } else {
                     setFret(6);
                 }
@@ -87,7 +101,7 @@ public class ChordLibraryActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int itemPosition, long l) {
                 String chordType;
-                direction="";
+                direction = "";
                 diagramIndexString = new int[]{6, 6, 5, 5, 4};
                 switch (itemPosition) {
                     case 1:
@@ -232,6 +246,7 @@ public class ChordLibraryActivity extends AppCompatActivity {
         }
         return 0;
     }
+
     private int findFretStartingThree(int string) {
         switch (string) {
             case 6:
