@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -32,9 +30,9 @@ public class ChordLibraryActivity extends AppCompatActivity {
     private String note = "";
     private String direction = "";
     private TextView barreChordWarning, fretIndicator;
-    private final String[] sixthStringNotes = new String[13];
-    private final String[] fifthStringNotes = new String[13];
-    private final String[] fourthStringNotes = new String[13];
+    private final String[] sixthStringNotes = new String[16];
+    private final String[] fifthStringNotes = new String[16];
+    private final String[] fourthStringNotes = new String[16];
     private List<Drawable> drawableList = new ArrayList<>();
     private ListIterator<Drawable> drawableListIterator = drawableList.listIterator();
     private int foregroundColor, backgroundColor;
@@ -52,7 +50,7 @@ public class ChordLibraryActivity extends AppCompatActivity {
         currentTheme.resolveAttribute(android.R.attr.colorBackground, typedValue, true);
         backgroundColor = typedValue.data;
         String[] notes = getResources().getStringArray(R.array.notes);
-        for (int i = 0; i <= notes.length; i++) {
+        for (int i = 0; i <= notes.length+3; i++) {
             sixthStringNotes[i] = notes[(7 + i) % notes.length];
             fifthStringNotes[i] = notes[i % notes.length];
             fourthStringNotes[i] = notes[(5 + i) % notes.length];
@@ -89,6 +87,7 @@ public class ChordLibraryActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int itemPosition, long l) {
                 String chordType;
+                direction="";
                 diagramIndexString = new int[]{6, 6, 5, 5, 4};
                 switch (itemPosition) {
                     case 1:
@@ -141,9 +140,9 @@ public class ChordLibraryActivity extends AppCompatActivity {
             setDiagram(drawable, diagramIndexString[diagramIndex]);
             if (!chordType.getSelectedItem().equals("5")) {
                 if (diagramIndex == 1 || diagramIndex == 3) {
-                    int fret = findFret(diagramIndexString[diagramIndex], true) - 3;
+                    int fret = findFretStartingThree(diagramIndexString[diagramIndex]) - 3;
                     if (fret != 0) {
-                        fretIndicator.setText(String.format("%d", fret));
+                        fretIndicator.setText(String.valueOf(fret));
                         barreChordWarning.setVisibility(View.VISIBLE);
                     } else {
                         fretIndicator.setText("");
@@ -169,9 +168,9 @@ public class ChordLibraryActivity extends AppCompatActivity {
             setDiagram(drawable, diagramIndexString[diagramIndex]);
             if (!chordType.getSelectedItem().equals("5")) {
                 if (diagramIndex == 1 || diagramIndex == 3) {
-                    int fret = findFret(diagramIndexString[diagramIndex],true) - 3;
+                    int fret = findFretStartingThree(diagramIndexString[diagramIndex]) - 3;
                     if (fret != 0) {
-                        fretIndicator.setText(String.format("%d", fret));
+                        fretIndicator.setText(String.valueOf(fret));
                         barreChordWarning.setVisibility(View.VISIBLE);
                     } else {
                         fretIndicator.setText("");
@@ -196,9 +195,9 @@ public class ChordLibraryActivity extends AppCompatActivity {
     }
 
     private void setFret(int string) {
-        int fret = findFret(string,false);
+        int fret = findFret(string);
         if (fret != 0) {
-            fretIndicator.setText(String.format("%d", fret));
+            fretIndicator.setText(String.valueOf(fret));
             barreChordWarning.setVisibility(View.VISIBLE);
         } else {
             fretIndicator.setText("");
@@ -206,19 +205,47 @@ public class ChordLibraryActivity extends AppCompatActivity {
         }
     }
 
-    private int findFret(int string, boolean skipFirst) {
+    private int findFret(int string) {
         switch (string) {
             case 6:
                 for (int i = 0; i < sixthStringNotes.length; i++) {
                     if (rootNote.getSelectedItem().equals(sixthStringNotes[i])) {
-                        if (!skipFirst && i != 0) return i;
+                        return i;
+
                     }
                 }
                 break;
             case 5:
                 for (int i = 0; i < fifthStringNotes.length; i++) {
                     if (rootNote.getSelectedItem().equals(fifthStringNotes[i])) {
-                        if (!skipFirst && i != 0) return i;
+                        return i;
+                    }
+                }
+                break;
+            case 4:
+                for (int i = 0; i < fourthStringNotes.length; i++) {
+                    if (rootNote.getSelectedItem().equals(fourthStringNotes[i])) {
+                        return i;
+                    }
+                }
+                break;
+        }
+        return 0;
+    }
+    private int findFretStartingThree(int string) {
+        switch (string) {
+            case 6:
+                for (int i = 3; i < sixthStringNotes.length; i++) {
+                    if (rootNote.getSelectedItem().equals(sixthStringNotes[i])) {
+                        return i;
+
+                    }
+                }
+                break;
+            case 5:
+                for (int i = 3; i < fifthStringNotes.length; i++) {
+                    if (rootNote.getSelectedItem().equals(fifthStringNotes[i])) {
+                        return i;
                     }
                 }
                 break;
