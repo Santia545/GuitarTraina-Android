@@ -165,7 +165,6 @@ public class ChordLibraryActivity extends AppCompatActivity {
                     }
                 }
             }
-            Toast.makeText(ChordLibraryActivity.this, "Next", Toast.LENGTH_SHORT).show();
             btnPrevious.setEnabled(true);
             btnPrevious.setColorFilter(foregroundColor);
             if (!drawableListIterator.hasNext()) {
@@ -193,7 +192,6 @@ public class ChordLibraryActivity extends AppCompatActivity {
                     }
                 }
             }
-            Toast.makeText(ChordLibraryActivity.this, "Previous", Toast.LENGTH_SHORT).show();
             btnNext.setEnabled(true);
             btnNext.setColorFilter(foregroundColor);
             if (!drawableListIterator.hasPrevious()) {
