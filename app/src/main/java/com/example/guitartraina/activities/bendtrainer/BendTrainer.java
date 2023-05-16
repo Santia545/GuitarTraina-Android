@@ -30,6 +30,8 @@ public class BendTrainer {
     private final int SAMPLE_RATE = 44100;
     private final int RECORD_BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_IN_MONO, ENCODING_PCM_16BIT);
     private final int RECORD_BUFFER_OVERLAP = RECORD_BUFFER_SIZE / 2;
+    private double loudness = 20;
+
     public BendTrainer(Activity activity) {
         this.activity = activity;
     }
@@ -43,7 +45,7 @@ public class BendTrainer {
             final float pitchInHz = result.getPitch();
             //Log.d("Values", "Gain: "+gain+" Sens: "+sensibility);
             //Log.d("Pitch", pitchInHz +"probability: "+result.getProbability()+" loudness: "+e.getdBSPL());
-            if (pitchInHz == -1 || result.getProbability() < 0.90f) {
+            if (pitchInHz == -1 || result.getProbability() < 0.90f ) {
                 return;
             }
             Log.d("Pitch", pitchInHz + "probability: " + result.getProbability() + " loudness: " + e.getdBSPL());
@@ -67,7 +69,7 @@ public class BendTrainer {
     private double getGainFromPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         int microphoneGain = sharedPreferences.getInt("microphone_gain", 10);
-        return microphoneGain/10.d;
+        return microphoneGain / 10.d;
     }
 
 

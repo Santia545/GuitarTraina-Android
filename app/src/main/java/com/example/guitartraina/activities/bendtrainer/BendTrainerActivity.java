@@ -4,12 +4,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKeys;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,15 +20,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.guitartraina.R;
-import com.example.guitartraina.ui.tuner.GuitarTuner;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 public class BendTrainerActivity extends AppCompatActivity {
     private BendTrainer bendTrainer;
-    private SharedPreferences archivo;
-
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +33,6 @@ public class BendTrainerActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO);
         } else {
-            getEncryptedSharedPreferences();
             bendTrainer = new BendTrainer(BendTrainerActivity.this);
         }
     }
@@ -68,22 +60,7 @@ public class BendTrainerActivity extends AppCompatActivity {
         }
 
     }
-    private void getEncryptedSharedPreferences() {
-        String masterKeyAlias;
-        archivo = null;
-        try {
-            masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
-            archivo = EncryptedSharedPreferences.create(
-                    "archivo",
-                    masterKeyAlias,
-                    BendTrainerActivity.this,
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            );
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
