@@ -9,4 +9,18 @@
         <item>9/8</item>
         <item>12/8</item>
     </string-array>
+    <string-array name="bends_list">
+        <item>¼</item>
+        <item>½</item>
+        <item>¾</item>
+        <item>1</item>
+        <item>1¼</item>
+        <item>1½</item>
+        <item>1¾</item>
+        <item>2</item>
+        <item>2¼</item>
+        <item>2½</item>
+        <item>2¾</item>
+        <item>3</item>
+    </string-array>
 </resources>

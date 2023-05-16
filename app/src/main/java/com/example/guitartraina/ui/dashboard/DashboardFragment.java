@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.guitartraina.R;
+import com.example.guitartraina.activities.bendtrainer.BendTrainerActivity;
 import com.example.guitartraina.activities.BugReportActivity;
 import com.example.guitartraina.activities.ChordLibraryActivity;
 import com.example.guitartraina.activities.LooperActivity;
@@ -38,6 +39,8 @@ public class DashboardFragment extends Fragment {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_ejercicios) {
             } else if (itemId == R.id.navigation_entrenador_de_bends) {
+                Intent bendTrainer = new Intent(requireContext(), BendTrainerActivity.class);
+                startActivity(bendTrainer);
             } else if (itemId == R.id.navigation_metronomo) {
                 Intent metronome = new Intent(requireContext(), MetronomeActivity.class);
                 startActivity(metronome);

@@ -20,8 +20,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
-            android:name=".activities.ChordLibraryActivity"
+            android:name=".activities.bendtrainer.BendTrainerActivity"
             android:exported="true" />
+        <activity
+            android:name=".activities.ChordLibraryActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.LooperActivity"
             android:exported="false" />
