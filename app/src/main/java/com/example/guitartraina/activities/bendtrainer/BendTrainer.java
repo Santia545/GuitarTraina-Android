@@ -16,8 +16,10 @@ import com.example.guitartraina.ui.views.FrequencyView;
 
 
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.GainProcessor;
+import be.tarsos.dsp.SilenceDetector;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.pitch.PitchDetectionHandler;
 import be.tarsos.dsp.pitch.PitchProcessor;
@@ -30,7 +32,6 @@ public class BendTrainer {
     private final int SAMPLE_RATE = 44100;
     private final int RECORD_BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_IN_MONO, ENCODING_PCM_16BIT);
     private final int RECORD_BUFFER_OVERLAP = RECORD_BUFFER_SIZE / 2;
-    private double loudness = 20;
 
     public BendTrainer(Activity activity) {
         this.activity = activity;
@@ -48,12 +49,17 @@ public class BendTrainer {
             if (pitchInHz == -1 || result.getProbability() < 0.90f ) {
                 return;
             }
-            Log.d("Pitch", pitchInHz + "probability: " + result.getProbability() + " loudness: " + e.getdBSPL());
+            //Log.d("Pitch", pitchInHz + "probability: " + result.getProbability() + " loudness: " + e.getdBSPL());
 
         };
         AudioProcessor gainProcessor = new GainProcessor(gain);
         AudioProcessor pitchProcessor = new PitchProcessor(PitchProcessor.PitchEstimationAlgorithm.FFT_YIN, SAMPLE_RATE, RECORD_BUFFER_SIZE, pdh);
+        double threshold = SilenceDetector.DEFAULT_SILENCE_THRESHOLD;
+        SilenceDetector silenceDetector = new SilenceDetector(threshold,false);
+        AudioProcessor silenceProcessor = new SilenceProcessor(silenceDetector, threshold);
         dispatcher.addAudioProcessor(gainProcessor);
+        dispatcher.addAudioProcessor(silenceDetector);
+        dispatcher.addAudioProcessor(silenceProcessor);
         dispatcher.addAudioProcessor(pitchProcessor);
         pitchDetectorThread = new Thread(dispatcher, "Audio Dispatcher");
         pitchDetectorThread.setPriority(Thread.MAX_PRIORITY);
@@ -93,6 +99,5 @@ public class BendTrainer {
         //12*100
         return 1200 * Math.log(pitchInHz / expectedFrequency) / 0.6931471805599453;
     }
-
 
 }
