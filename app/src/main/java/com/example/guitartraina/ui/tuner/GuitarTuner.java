@@ -23,7 +23,8 @@ import be.tarsos.dsp.pitch.PitchProcessor;
 public class GuitarTuner {
     private final Activity activity;
     private final double[] STANDAR_TUNING_FREQ = new double[]{82.41, 110.00, 146.83, 196.00, 246.94, 329.63, 440};
-    private double[] stringArray = STANDAR_TUNING_FREQ;    private Thread pitchDetectorThread = null;
+    private double[] stringArray = STANDAR_TUNING_FREQ;
+    private Thread pitchDetectorThread = null;
     private AudioDispatcher dispatcher = null;
     private final int SAMPLE_RATE = 44100;
     private final int RECORD_BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_IN_MONO, ENCODING_PCM_16BIT);

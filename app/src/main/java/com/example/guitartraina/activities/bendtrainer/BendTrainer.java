@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.media.AudioRecord;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.preference.PreferenceManager;
 
@@ -14,6 +15,8 @@ import androidx.preference.PreferenceManager;
 import com.example.guitartraina.R;
 import com.example.guitartraina.ui.views.FrequencyView;
 
+
+import java.util.EventListener;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
@@ -40,23 +43,31 @@ public class BendTrainer {
     public void run() {
         double gain = getGainFromPreferences();
         int sensibility = getSensibilityFromPreferences();
+        double threshold = -100;
         dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(SAMPLE_RATE, RECORD_BUFFER_SIZE, RECORD_BUFFER_OVERLAP);
         PitchDetectionHandler pdh = (result, e) -> {
             FrequencyView frequencyView = activity.findViewById(R.id.frequencyView);
             final float pitchInHz = result.getPitch();
             //Log.d("Values", "Gain: "+gain+" Sens: "+sensibility);
             //Log.d("Pitch", pitchInHz +"probability: "+result.getProbability()+" loudness: "+e.getdBSPL());
-            if (pitchInHz == -1 || result.getProbability() < 0.90f ) {
+            if (pitchInHz == -1 || result.getProbability() < 0.90f) {
                 return;
             }
-            //Log.d("Pitch", pitchInHz + "probability: " + result.getProbability() + " loudness: " + e.getdBSPL());
+            if(e.getdBSPL()>threshold){
+                Log.d("bend", "bend detected and pitched:"+pitchInHz + "probability: " + result.getProbability() + " loudness: " + e.getdBSPL());
+            }
 
+        };
+        BendListener bendListener = new BendListener() {
+            @Override
+            public void onListen(double volumen) {
+                System.out.println("Sound detected at:" + System.currentTimeMillis() + ", " + (int) (volumen) + "dB SPL\n");
+            }
         };
         AudioProcessor gainProcessor = new GainProcessor(gain);
         AudioProcessor pitchProcessor = new PitchProcessor(PitchProcessor.PitchEstimationAlgorithm.FFT_YIN, SAMPLE_RATE, RECORD_BUFFER_SIZE, pdh);
-        double threshold = SilenceDetector.DEFAULT_SILENCE_THRESHOLD;
         SilenceDetector silenceDetector = new SilenceDetector(threshold,false);
-        AudioProcessor silenceProcessor = new SilenceProcessor(silenceDetector, threshold);
+        AudioProcessor silenceProcessor = new SilenceProcessor(silenceDetector, bendListener);
         dispatcher.addAudioProcessor(gainProcessor);
         dispatcher.addAudioProcessor(silenceDetector);
         dispatcher.addAudioProcessor(silenceProcessor);

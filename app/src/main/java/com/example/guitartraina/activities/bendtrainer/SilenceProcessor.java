@@ -6,19 +6,23 @@ import be.tarsos.dsp.SilenceDetector;
 
 public class SilenceProcessor implements AudioProcessor {
     private final SilenceDetector silenceDetector;
-    private final double threshold;
-    public SilenceProcessor(SilenceDetector silenceDetector, double threshold) {
-        this.silenceDetector=silenceDetector;
-        this.threshold=threshold;
+    private final BendListener bendListener;
+    private double threshold = -100;
+
+    public SilenceProcessor(SilenceDetector silenceDetector, BendListener bendListener) {
+        this.silenceDetector = silenceDetector;
+        this.bendListener = bendListener;
     }
 
     @Override
     public boolean process(AudioEvent audioEvent) {
-        System.out.println(silenceDetector.currentSPL());
-        if(silenceDetector.currentSPL()>threshold){
-            System.out.println("Sound detected at:" + System.currentTimeMillis() + ", " + (int) (silenceDetector.currentSPL()) + "dB SPL\n");
+        System.out.println();
+        double volumen = silenceDetector.currentSPL();
+        if (volumen > threshold + 10) {
+            bendListener.onListen(volumen);
         }
-        return false;
+        threshold = volumen;
+        return true;
     }
 
     @Override
