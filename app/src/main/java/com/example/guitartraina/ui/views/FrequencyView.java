@@ -9,6 +9,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
+import com.example.guitartraina.R;
+
 import java.util.Locale;
 
 public class FrequencyView extends View {
@@ -61,8 +63,8 @@ public class FrequencyView extends View {
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
         if (note != null) {
-            canvas.drawText("Target Note:", centerX, centerY-10 - TEXT_SIZE*2, paintText);
-            canvas.drawText(note + " + " + centsDiff/100 + " semitones", centerX, centerY - TEXT_SIZE, paintText);
+            canvas.drawText(getContext().getString(R.string.target_note), centerX, centerY-10 - TEXT_SIZE*2, paintText);
+            canvas.drawText(note + " + " + centsDiff/100 +" " +getContext().getString(R.string.semitones), centerX, centerY - TEXT_SIZE, paintText);
         }
         if (cents != null) {
             float graphPosition = map(centerX, cents);

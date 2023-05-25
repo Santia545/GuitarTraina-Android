@@ -111,6 +111,7 @@
     <string name="root_note">Root Note</string>
     <string name="chord_type">Chord Type</string>
     <string name="capo_barre_chord">Play with capo or barre on indicated fret</string>
+    <string name="tonos_del_bend">Bend Height in tones</string>
     <string-array name="notes">
         <item>A</item>
         <item>A#</item>
@@ -133,4 +134,6 @@
         <item>7</item>
         <item>7m</item>
     </string-array>
+    <string name="target_note">Target Note:</string>
+    <string name="semitones"> semitones</string>
 </resources>

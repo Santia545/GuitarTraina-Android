@@ -37,15 +37,15 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tonos del Bend"
+            android:text="@string/tonos_del_bend"
             android:textSize="17sp"
-            app:layout_constraintBottom_toTopOf="@+id/time_signature"
+            app:layout_constraintBottom_toTopOf="@+id/bend_height"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
-            android:id="@+id/time_signature"
+            android:id="@+id/bend_height"
             style="@style/Widget.AppCompat.Spinner.DropDown"
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -65,7 +65,7 @@
         app:layout_constraintBottom_toTopOf="@id/fragment_activity_metronome"
         app:layout_constraintTop_toTopOf="@id/guideline9" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_activity_metronome"
         android:name="com.example.guitartraina.ui.metronome.MetronomeFragment"
         android:layout_width="0dp"

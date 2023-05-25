@@ -71,7 +71,6 @@ public class GuitarTunerView extends View {
         mNoteNames = new String[]{"E", "A", "D", "G", "B", "E"};
         mCentsDiffs = new double[]{11, 11, 11, 11, 11, 11};
         stringIndex = null;
-
     }
 
     @Override
