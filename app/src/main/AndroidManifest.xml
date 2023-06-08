@@ -21,7 +21,7 @@
         tools:targetApi="m">
         <activity
             android:name=".activities.EarTrainerActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".activities.ChordLibraryActivity"
             android:exported="true" />

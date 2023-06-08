@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.example.guitartraina.R;
 import com.example.guitartraina.activities.BugReportActivity;
 import com.example.guitartraina.activities.ChordLibraryActivity;
+import com.example.guitartraina.activities.EarTrainerActivity;
 import com.example.guitartraina.activities.LooperActivity;
 import com.example.guitartraina.activities.metronome.MetronomeActivity;
 import com.example.guitartraina.databinding.FragmentDashboardBinding;
@@ -43,6 +44,8 @@ public class DashboardFragment extends Fragment {
                 startActivity(metronome);
             } else if (itemId == R.id.navigation_sesion_grupal) {
             } else if (itemId == R.id.navigation_entrenador_de_oido) {
+                Intent earTrainer = new Intent(requireContext(), EarTrainerActivity.class);
+                startActivity(earTrainer);
             } else if (itemId == R.id.navigation_detective_de_ritmo) {
             } else if (itemId == R.id.navigation_rythm_looper) {
                 Intent rythmLooper = new Intent(requireContext(), LooperActivity.class);
