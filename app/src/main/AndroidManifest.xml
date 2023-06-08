@@ -20,6 +20,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".activities.EarTrainerActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ChordLibraryActivity"
             android:exported="true" />
         <activity
