@@ -94,7 +94,7 @@ public class EarTrainerActivity extends AppCompatActivity {
 
         return new AlertDialog.Builder(this)
                 .setTitle("Sesion Finalizada!")
-                .setMessage("Puntacion: "+String.format(Locale.getDefault(),"%.2f",(double)rightAnswers/15.)+"\nAciertos: "+rightAnswers+"\nFallos:"+wrongAnswers)
+                .setMessage("Puntacion: "+String.format(Locale.getDefault(),"%.2f",((double)rightAnswers/15.)*100)+"\nAciertos: "+rightAnswers+"\nFallos:"+wrongAnswers)
                 .setPositiveButton("Nueva Sesion", (dialogInterface, i) -> {
                     saveProgress();
                     recreate();
