@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.guitartraina.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -42,8 +41,8 @@ public class EarTrainerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ear_trainer);
         repeatSound = findViewById(R.id.repeat);
-        TVprogress=findViewById(R.id.progressTV);
-        TVprogress.setText(String.format(Locale.getDefault(),"Question: %d/15", counter));
+        TVprogress = findViewById(R.id.progressTV);
+        TVprogress.setText(String.format(Locale.getDefault(), "Question: %d/15", counter));
         tile[0] = findViewById(R.id.tile1);
         tile[1] = findViewById(R.id.tile2);
         tile[2] = findViewById(R.id.tile3);
@@ -65,36 +64,50 @@ public class EarTrainerActivity extends AppCompatActivity {
             tile[i].setOnClickListener(view -> playSound(finalI + 1));
         }
         right = view -> {
-            Toast.makeText(EarTrainerActivity.this, "Correcto", Toast.LENGTH_SHORT).show();
             counter++;
             rightAnswers++;
-            if (counter < 16) {
-                nextQuestion();
-            } else {
-                endDialog();
-            }
+            nextQuestionDialog(true);
         };
         wrong = view -> {
-            Toast.makeText(EarTrainerActivity.this, "Incorrecto", Toast.LENGTH_SHORT).show();
             counter++;
             wrongAnswers++;
-            if (counter < 16) {
-                nextQuestion();
-            } else {
-                endDialog();
-            }
+            nextQuestionDialog(false);
         };
 
+    }
+
+    private void nextQuestionDialog(boolean answer) {
+        dialogBuilder2(answer).show();
+    }
+
+    private AlertDialog dialogBuilder2(boolean answer) {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setPositiveButton("Siguiente", (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                    if (counter < 16) {
+                        nextQuestion();
+                    } else {
+                        endDialog();
+                    }
+                })
+                .create();
+        if (answer) {
+            dialog.setTitle("Respuesta Correcta");
+        } else {
+            dialog.setTitle("Respuesta Incorrecta");
+        }
+        return dialog;
     }
 
     private void endDialog() {
         dialogBuilder().show();
     }
+
     private AlertDialog dialogBuilder() {
 
         return new AlertDialog.Builder(this)
                 .setTitle("Sesion Finalizada!")
-                .setMessage("Puntacion: "+String.format(Locale.getDefault(),"%.2f",((double)rightAnswers/15.)*100)+"\nAciertos: "+rightAnswers+"\nFallos:"+wrongAnswers)
+                .setMessage("Puntacion: " + String.format(Locale.getDefault(), "%.2f", ((double) rightAnswers / 15.) * 100) + "\nAciertos: " + rightAnswers + "\nFallos:" + wrongAnswers)
                 .setPositiveButton("Nueva Sesion", (dialogInterface, i) -> {
                     saveProgress();
                     recreate();
@@ -102,7 +115,7 @@ public class EarTrainerActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Salir", (dialog1, which) -> dialog1.cancel())
                 .setOnCancelListener(dialogInterface ->
-                    finish()
+                        finish()
                 )
                 .create();
     }
@@ -111,7 +124,7 @@ public class EarTrainerActivity extends AppCompatActivity {
     }
 
     private void nextQuestion() {
-        TVprogress.setText(String.format(Locale.getDefault(),"Pregunta: %d/15", counter));
+        TVprogress.setText(String.format(Locale.getDefault(), "Pregunta: %d/15", counter));
         genQuestion();
     }
 
@@ -143,11 +156,11 @@ public class EarTrainerActivity extends AppCompatActivity {
     private void genQuestion() {
         int counter = 1;
         int[] randomNumbersArray = new int[4];
-        int count=0;
+        int count = 0;
         while (count < 4) {
             long seed = System.currentTimeMillis();
             Random random = new Random(seed);
-            int randomNumber = random.nextInt(11);
+            int randomNumber = random.nextInt(12);
 
             // Check if the generated random number is already in the randomNumbersArray
             boolean isDuplicate = false;
@@ -181,6 +194,6 @@ public class EarTrainerActivity extends AppCompatActivity {
                 counter++;
             }
         }
-        repeatSound.setOnClickListener(view -> playSound(((Integer) randomNumbersArray[0]) + 1));
+        repeatSound.setOnClickListener(view -> playSound(randomNumbersArray[0] + 1));
     }
 }
