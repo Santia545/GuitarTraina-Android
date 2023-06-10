@@ -3,6 +3,7 @@ package com.example.guitartraina.activities;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.media.AudioFormat;
 import android.media.AudioTrack;
 import android.os.Bundle;
@@ -82,8 +83,15 @@ public class EarTrainerActivity extends AppCompatActivity {
 
     private AlertDialog dialogBuilder2(boolean answer) {
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setPositiveButton("Siguiente", (dialogInterface, i) -> {
+                .setPositiveButton(R.string.siguiente, (dialogInterface, i) -> {
                     dialogInterface.dismiss();
+                    if (counter < 16) {
+                        nextQuestion();
+                    } else {
+                        endDialog();
+                    }
+                })
+                .setOnCancelListener(dialogInterface -> {
                     if (counter < 16) {
                         nextQuestion();
                     } else {
@@ -92,9 +100,9 @@ public class EarTrainerActivity extends AppCompatActivity {
                 })
                 .create();
         if (answer) {
-            dialog.setTitle("Respuesta Correcta");
+            dialog.setTitle(getString(R.string.respuesta_correcta));
         } else {
-            dialog.setTitle("Respuesta Incorrecta");
+            dialog.setTitle(getString(R.string.respuesta_incorrecta));
         }
         return dialog;
     }
@@ -106,14 +114,14 @@ public class EarTrainerActivity extends AppCompatActivity {
     private AlertDialog dialogBuilder() {
 
         return new AlertDialog.Builder(this)
-                .setTitle("Sesion Finalizada!")
-                .setMessage("Puntacion: " + String.format(Locale.getDefault(), "%.2f", ((double) rightAnswers / 15.) * 100) + "\nAciertos: " + rightAnswers + "\nFallos:" + wrongAnswers)
-                .setPositiveButton("Nueva Sesion", (dialogInterface, i) -> {
+                .setTitle(getString(R.string.sesion_finalizada))
+                .setMessage(getString(R.string.puntuacion) + String.format(Locale.getDefault(), "%.2f", ((double) rightAnswers / 15.) * 100) + "\nAciertos: " + rightAnswers + "\nFallos:" + wrongAnswers)
+                .setPositiveButton(getString(R.string.nueva_sesion), (dialogInterface, i) -> {
                     saveProgress();
                     recreate();
                     dialogInterface.dismiss();
                 })
-                .setNegativeButton("Salir", (dialog1, which) -> dialog1.cancel())
+                .setNegativeButton(getString(R.string.salir), (dialog1, which) -> dialog1.cancel())
                 .setOnCancelListener(dialogInterface ->
                         finish()
                 )
@@ -124,7 +132,7 @@ public class EarTrainerActivity extends AppCompatActivity {
     }
 
     private void nextQuestion() {
-        TVprogress.setText(String.format(Locale.getDefault(), "Pregunta: %d/15", counter));
+        TVprogress.setText(String.format(Locale.getDefault(), getString(R.string.pregunta_x_15), counter));
         genQuestion();
     }
 

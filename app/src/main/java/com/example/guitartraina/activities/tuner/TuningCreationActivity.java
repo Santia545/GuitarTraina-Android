@@ -151,13 +151,13 @@ public class TuningCreationActivity extends AppCompatActivity {
 
     private AlertDialog dialogBuilder2() {
         return new AlertDialog.Builder(this)
-                .setTitle("Alerta, afinacion muy aguda")
-                .setMessage("Por lo menos alguna de las cuerdas está afinada mas de 10 cents arriba de la afinacion estandar de guitarra, esto puede provocar que se haga daño al instrumento")
-                .setPositiveButton("Continuar", (dialogInterface, i) -> {
+                .setTitle(getString(R.string.high_tuning_alert))
+                .setMessage(getString(R.string.high_tuning_alert_message))
+                .setPositiveButton(getString(R.string.continuar), (dialogInterface, i) -> {
                     AlertDialog saveDialog = dialogBuilder();
                     saveDialog.show();
                 })
-                .setNegativeButton("Cancelar", (dialog1, which) -> dialog1.cancel())
+                .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.cancel())
                 .setOnCancelListener(DialogInterface::cancel)
                 .create();
     }
