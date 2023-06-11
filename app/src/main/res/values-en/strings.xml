@@ -133,4 +133,15 @@
         <item>7</item>
         <item>7m</item>
     </string-array>
+    <string name="siguiente">Next</string>
+    <string name="respuesta_correcta">Correct Answer</string>
+    <string name="respuesta_incorrecta">Wrong Answer</string>
+    <string name="sesion_finalizada">Session ended!</string>
+    <string name="puntuacion">Score:</string>
+    <string name="nueva_sesion">New Session</string>
+    <string name="salir">Exit</string>
+    <string name="pregunta_x_15">Question: %d/15</string>
+    <string name="high_tuning_alert">Warning, sharp tuning</string>
+    <string name="high_tuning_alert_message">At least one of the strings its tuned 10 cents sharper than standar tuning</string>
+    <string name="continuar">Continue</string>
 </resources>
