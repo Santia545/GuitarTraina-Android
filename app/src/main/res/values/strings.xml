@@ -157,7 +157,7 @@
     <string name="respuesta_correcta">Respuesta Correcta</string>
     <string name="respuesta_incorrecta">Respuesta Incorrecta</string>
     <string name="sesion_finalizada">Sesion Finalizada!</string>
-    <string name="puntuacion">\"Puntacion: \"</string>
+    <string name="puntuacion">Puntacion: </string>
     <string name="nueva_sesion">Nueva Sesion</string>
     <string name="salir">Salir</string>
     <string name="pregunta_x_15">Pregunta: %d/15</string>
@@ -177,6 +177,20 @@
         <item>Fa#</item>
         <item>Sol</item>
         <item>Sol#</item>
+    </string-array>
+    <string-array name="piano_notes">
+        <item>Do</item>
+        <item>Do#</item>
+        <item>Re</item>
+        <item>Re#</item>
+        <item>Mi</item>
+        <item>Fa</item>
+        <item>Fa#</item>
+        <item>Sol</item>
+        <item>Sol#</item>
+        <item>La</item>
+        <item>La#</item>
+        <item>Si</item>
     </string-array>
     <string-array name="chords">
         <item>Mayor</item>

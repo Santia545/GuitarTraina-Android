@@ -26,7 +26,7 @@ import be.tarsos.dsp.io.android.AndroidAudioPlayer;
 
 
 public class EarTrainerActivity extends AppCompatActivity {
-    private final String[] tilesNotes = new String[]{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+    private String[] tilesNotes = new String[]{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
     private final FloatingActionButton[] tile = new FloatingActionButton[12];
     private final Button[] options = new Button[4];
     private Button repeatSound;
@@ -41,9 +41,10 @@ public class EarTrainerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ear_trainer);
+        tilesNotes=getResources().getStringArray(R.array.piano_notes);
         repeatSound = findViewById(R.id.repeat);
         TVprogress = findViewById(R.id.progressTV);
-        TVprogress.setText(String.format(Locale.getDefault(), "Question: %d/15", counter));
+        TVprogress.setText(String.format(Locale.getDefault(), getString(R.string.pregunta_x_15), counter));
         tile[0] = findViewById(R.id.tile1);
         tile[1] = findViewById(R.id.tile2);
         tile[2] = findViewById(R.id.tile3);
