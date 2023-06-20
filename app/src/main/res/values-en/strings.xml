@@ -111,6 +111,7 @@
     <string name="root_note">Root Note</string>
     <string name="chord_type">Chord Type</string>
     <string name="capo_barre_chord">Play with capo or barre on indicated fret</string>
+    <string name="dificultad_automatica">Auto-Difficulty</string>
     <string-array name="notes">
         <item>A</item>
         <item>A#</item>

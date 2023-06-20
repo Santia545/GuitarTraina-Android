@@ -2,20 +2,37 @@ package com.example.guitartraina.activities;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKeys;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioTrack;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.Spanned;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.example.guitartraina.R;
+import com.example.guitartraina.activities.tuner.TuningCreationActivity;
+import com.example.guitartraina.api.IResult;
+import com.example.guitartraina.api.VolleyService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.IOException;
 import java.io.InputStream;
 
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.util.Locale;
 import java.util.Random;
 
@@ -30,18 +47,27 @@ public class EarTrainerActivity extends AppCompatActivity {
     private final FloatingActionButton[] tile = new FloatingActionButton[12];
     private final Button[] options = new Button[4];
     private Button repeatSound;
+    private SwitchCompat swAutoDifficulty;
     private View.OnClickListener right;
     private View.OnClickListener wrong;
     private TextView TVprogress;
     private int counter = 1;
     private int rightAnswers = 0;
     private int wrongAnswers = 0;
+    private IResult resultCallback = null;
+    private VolleyService volleyService;
+    private SharedPreferences archivo;
+    private int difficulty=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ear_trainer);
-        tilesNotes=getResources().getStringArray(R.array.piano_notes);
+        initVolleyCallback();
+        getEncryptedSharedPreferences();
+        volleyService = new VolleyService(resultCallback, this);
+        swAutoDifficulty = findViewById(R.id.switch1);
+        tilesNotes = getResources().getStringArray(R.array.piano_notes);
         repeatSound = findViewById(R.id.repeat);
         TVprogress = findViewById(R.id.progressTV);
         TVprogress.setText(String.format(Locale.getDefault(), getString(R.string.pregunta_x_15), counter));
@@ -75,7 +101,13 @@ public class EarTrainerActivity extends AppCompatActivity {
             wrongAnswers++;
             nextQuestionDialog(false);
         };
-
+        swAutoDifficulty.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(compoundButton.isChecked()){
+                difficulty=getDifficulty();
+            }else{
+                dialogBuilder3().show();
+            }
+        });
     }
 
     private void nextQuestionDialog(boolean answer) {
@@ -89,14 +121,14 @@ public class EarTrainerActivity extends AppCompatActivity {
                     if (counter < 16) {
                         nextQuestion();
                     } else {
-                        endDialog();
+                        endProcess();
                     }
                 })
                 .setOnCancelListener(dialogInterface -> {
                     if (counter < 16) {
                         nextQuestion();
                     } else {
-                        endDialog();
+                        endProcess();
                     }
                 })
                 .create();
@@ -108,17 +140,61 @@ public class EarTrainerActivity extends AppCompatActivity {
         return dialog;
     }
 
-    private void endDialog() {
-        dialogBuilder().show();
+    private void endProcess() {
+        double score=((double) rightAnswers / 15.) * 100;
+        saveProgress(score);
+        dialogBuilder(score).show();
+        setDifficulty();
     }
 
-    private AlertDialog dialogBuilder() {
+    private void setDifficulty() {
 
+    }
+    private AlertDialog dialogBuilder3() {
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setHint(R.string.cantidad_de_notas);
+        int minValue = 1;
+        int maxValue = 7;
+        InputFilter inputFilter = (source, start, end, dest, dstart, dend) -> {
+            try {
+                int inputVal = Integer.parseInt(dest.toString() + source.toString());
+                if (inputVal >= minValue && inputVal <= maxValue)
+                    return null;
+            } catch (NumberFormatException ignored) {
+            }
+            return "";
+        };
+        input.setFilters(new InputFilter[] { inputFilter });
+        AlertDialog dialog = new AlertDialog.Builder(EarTrainerActivity.this)
+                .setTitle(getString(R.string.ingresa_la_dificultad))
+                .setMessage(getString(R.string.difficulty_change_description))
+                .setView(input)
+                .setPositiveButton(getString(R.string.save), (dialogInterface, i) -> {
+                    String title = input.getText().toString();
+                    if (title.equals("")) {
+                        Toast.makeText(EarTrainerActivity.this, "Validacion fallida", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Toast.makeText(EarTrainerActivity.this, "Validacion correcta", Toast.LENGTH_SHORT).show();
+                    recreate();
+                    dialogInterface.dismiss();
+                })
+                .setNegativeButton(getString(R.string.cancel), (dialog1, which) -> dialog1.cancel())
+                .setOnCancelListener(dialogInterface -> {
+                    swAutoDifficulty.setChecked(true);
+                })
+                .create();
+        float dpi = this.getResources().getDisplayMetrics().density;
+        dialog.setView(input, (int) (19 * dpi), (int) (5 * dpi), (int) (14 * dpi), (int) (5 * dpi));
+        return dialog;
+    }
+
+    private AlertDialog dialogBuilder(double score) {
         return new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.sesion_finalizada))
-                .setMessage(getString(R.string.puntuacion) + String.format(Locale.getDefault(), "%.2f", ((double) rightAnswers / 15.) * 100) + "\nAciertos: " + rightAnswers + "\nFallos:" + wrongAnswers)
+                .setMessage(getString(R.string.puntuacion) + String.format(Locale.getDefault(), "%.2f", score) + "\nAciertos: " + rightAnswers + "\nFallos:" + wrongAnswers)
                 .setPositiveButton(getString(R.string.nueva_sesion), (dialogInterface, i) -> {
-                    saveProgress();
                     recreate();
                     dialogInterface.dismiss();
                 })
@@ -129,8 +205,11 @@ public class EarTrainerActivity extends AppCompatActivity {
                 .create();
     }
 
-    private void saveProgress() {
+    private void saveProgress(double score) {
+        String url = "/Scores?module=1&score=" + score + "&difficulty=" + getDifficulty() + "&email=" + getCurrentUser();
+        volleyService.postStringDataVolley(url);
     }
+
 
     private void nextQuestion() {
         TVprogress.setText(String.format(Locale.getDefault(), getString(R.string.pregunta_x_15), counter));
@@ -204,5 +283,66 @@ public class EarTrainerActivity extends AppCompatActivity {
             }
         }
         repeatSound.setOnClickListener(view -> playSound(randomNumbersArray[0] + 1));
+    }
+
+    void initVolleyCallback() {
+        resultCallback = new IResult() {
+            @Override
+            public void notifySuccess(String requestType, Object response) {
+                Toast.makeText(EarTrainerActivity.this, getString(R.string.exito), Toast.LENGTH_LONG).show();
+                Log.d("notifySuccess", "Volley requester " + requestType);
+                Log.d("notifySuccess", "Volley JSON post" + response);
+
+            }
+
+            @Override
+            public void notifyError(String requestType, VolleyError error) {
+                error.printStackTrace();
+                String body = "";
+                String errorCode = "";
+                try {
+                    errorCode = "" + error.networkResponse.statusCode;
+                    body = new String(error.networkResponse.data, StandardCharsets.UTF_8);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String cause = "";
+                if (error.getCause() != null) {
+                    cause = error.getCause().getMessage();
+                }
+                Toast.makeText(EarTrainerActivity.this, getString(R.string.fallido) + cause + " " + body + " ", Toast.LENGTH_LONG).show();
+                Log.d("notifyError", "Volley requester " + requestType);
+                Log.d("notifyError", "Volley JSON post" + "That didn't work!" + error + " " + errorCode);
+                Log.d("notifyError", "Error: " + error
+                        + "\nStatus Code " + errorCode
+                        + "\nResponse Data " + body
+                        + "\nCause " + error.getCause()
+                        + "\nmessage " + error.getMessage());
+            }
+        };
+    }
+
+    private void getEncryptedSharedPreferences() {
+        String masterKeyAlias;
+        archivo = null;
+        try {
+            masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+            archivo = EncryptedSharedPreferences.create(
+                    "archivo",
+                    masterKeyAlias,
+                    EarTrainerActivity.this,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (GeneralSecurityException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getCurrentUser() {
+        return archivo.getString("email", "");
+    }
+    private int getDifficulty() {
+        return archivo.getInt("earDifficulty", 1);
     }
 }

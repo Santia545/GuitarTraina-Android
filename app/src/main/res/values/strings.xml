@@ -164,6 +164,10 @@
     <string name="high_tuning_alert">Alerta, afinacion muy aguda</string>
     <string name="high_tuning_alert_message">Por lo menos alguna de las cuerdas está afinada mas de 10 cents arriba de la afinacion estandar de guitarra, esto puede provocar que se haga daño al instrumento</string>
     <string name="continuar">Continuar</string>
+    <string name="dificultad_automatica">Dificultad Automatica</string>
+    <string name="cantidad_de_notas">Cantidad de Notas</string>
+    <string name="ingresa_la_dificultad">Ingresa la dificultad</string>
+    <string name="difficulty_change_description">La dificultad indica el numero de notas a identificar por pregunta, minimo 1 maximo 7, además al cambiar la dificultado se reinicia la sesión perdiendo el progreso actual</string>
     <string-array name="notes">
         <item>La</item>
         <item>La#</item>
