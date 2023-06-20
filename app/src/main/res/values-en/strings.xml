@@ -133,4 +133,12 @@
         <item>7</item>
         <item>7m</item>
     </string-array>
+    <string name="buscar">search</string>
+    <string name="compite">Compete</string>
+    <string name="grabar">Record</string>
+    <string name="descripcion">Description</string>
+    <string name="titulo">Title</string>
+    <string name="publicar">Publish</string>
+    <string name="reproducir">Play</string>
+    <string name="regrabar">Re-Record</string>
 </resources>

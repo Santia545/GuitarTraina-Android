@@ -153,6 +153,14 @@
     <string name="root_note">Nota Fundamental</string>
     <string name="chord_type">Tipo de Acorde</string>
     <string name="capo_barre_chord">Toca con capo o con cejilla en el traste indicado</string>
+    <string name="buscar">buscar</string>
+    <string name="compite">Compite</string>
+    <string name="grabar">Grabar</string>
+    <string name="descripcion">Descripcion</string>
+    <string name="titulo">Titulo</string>
+    <string name="publicar">Publicar</string>
+    <string name="reproducir">Reproducir</string>
+    <string name="regrabar">Regrabar</string>
     <string-array name="notes">
         <item>La</item>
         <item>La#</item>

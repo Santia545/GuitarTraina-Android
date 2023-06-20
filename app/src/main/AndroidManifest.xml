@@ -20,8 +20,16 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
-            android:name=".activities.ChordLibraryActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".activities.ranking.RecorderActivity"
             android:exported="true" />
+        <activity
+            android:name=".activities.ranking.RankingActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activities.ChordLibraryActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.LooperActivity"
             android:exported="false" />
