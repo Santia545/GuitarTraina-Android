@@ -145,4 +145,9 @@
     <string name="high_tuning_alert">Warning, sharp tuning</string>
     <string name="high_tuning_alert_message">At least one of the strings its tuned 10 cents sharper than standar tuning</string>
     <string name="continuar">Continue</string>
+    <string name="repetir">Repeat</string>
+    <string name="cantidad_de_notas">Amount of Notes</string>
+    <string name="ingresa_la_dificultad">Type the difficulty</string>
+    <string name="difficulty_change_description">The difficulty is the amount of notes each question has, minim 1 note, maximum 7 notes. after setting a new difficulty the session its restarted</string>
+    <string name="empty_difficult_error">The difficulty cannot be empty</string>
 </resources>

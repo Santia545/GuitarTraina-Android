@@ -102,9 +102,12 @@ public class EarTrainerActivity extends AppCompatActivity {
             nextQuestionDialog(false);
         };
         swAutoDifficulty.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(!compoundButton.isPressed())
+                return;
             if(compoundButton.isChecked()){
-                difficulty=getDifficulty();
-            }else{
+                //shared preferences
+                recreate();
+            } else {
                 dialogBuilder3().show();
             }
         });
@@ -173,17 +176,15 @@ public class EarTrainerActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.save), (dialogInterface, i) -> {
                     String title = input.getText().toString();
                     if (title.equals("")) {
-                        Toast.makeText(EarTrainerActivity.this, "Validacion fallida", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EarTrainerActivity.this, getString(R.string.empty_difficult_error), Toast.LENGTH_SHORT).show();
+                        dialogInterface.cancel();
                         return;
                     }
-                    Toast.makeText(EarTrainerActivity.this, "Validacion correcta", Toast.LENGTH_SHORT).show();
                     recreate();
                     dialogInterface.dismiss();
                 })
                 .setNegativeButton(getString(R.string.cancel), (dialog1, which) -> dialog1.cancel())
-                .setOnCancelListener(dialogInterface -> {
-                    swAutoDifficulty.setChecked(true);
-                })
+                .setOnCancelListener(dialogInterface -> swAutoDifficulty.setChecked(true))
                 .create();
         float dpi = this.getResources().getDisplayMetrics().density;
         dialog.setView(input, (int) (19 * dpi), (int) (5 * dpi), (int) (14 * dpi), (int) (5 * dpi));
@@ -338,7 +339,16 @@ public class EarTrainerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
+    private void setManualDifficulty(int difficulty) {
+        SharedPreferences.Editor editor = archivo.edit();
+        editor.putInt("earAutoDifficulty", difficulty);
+        editor.apply();
+    }
+    private void setAutoDifficulty() {
+        SharedPreferences.Editor editor = archivo.edit();
+        editor.putInt("earAutoDifficulty", difficulty);
+        editor.apply();
+    }
     private String getCurrentUser() {
         return archivo.getString("email", "");
     }
