@@ -3,10 +3,15 @@ package com.example.guitartraina.activities.ranking;
 import static android.media.AudioFormat.CHANNEL_IN_MONO;
 import static android.media.AudioFormat.ENCODING_PCM_16BIT;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
+import android.Manifest;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.AudioRecord;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,6 +26,7 @@ import com.example.guitartraina.R;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
+import java.util.Map;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioProcessor;
@@ -57,6 +63,14 @@ public class RecorderActivity extends AppCompatActivity {
             recordAudio();
             handler.postDelayed(stopRecording,5000);
         });
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED|| ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            String[] permissions = {
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.RECORD_AUDIO
+            };
+            requestPermissionLauncher.launch(permissions);
+        }
     }
 
     private void disablePlayReRecordPublishButtons() {
@@ -112,4 +126,26 @@ public class RecorderActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+    private final ActivityResultLauncher<String[]> requestPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            permissions -> {
+                boolean allPermissionsGranted = true;
+                for (Map.Entry<String, Boolean> entry : permissions.entrySet()) {
+                    String permission = entry.getKey();
+                    boolean isGranted = entry.getValue();
+                    if (!isGranted) {
+                        allPermissionsGranted = false;
+                        // Handle the denied permission accordingly
+                        // You can show an error message or take appropriate action
+                        Toast.makeText(RecorderActivity.this, "Este modulo no puede funcionar sin el permiso: " + permission, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if (allPermissionsGranted) {
+                    // All permissions granted
+                    Toast.makeText(RecorderActivity.this, "All permissions granted", Toast.LENGTH_SHORT).show();
+                    RecorderActivity.this.recreate();
+                }
+            }
+    );
+
 }
