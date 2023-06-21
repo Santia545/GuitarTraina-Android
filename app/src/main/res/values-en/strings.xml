@@ -141,4 +141,5 @@
     <string name="publicar">Publish</string>
     <string name="reproducir">Play</string>
     <string name="regrabar">Re-Record</string>
+    <string name="info_permission_recorder">"This tool requires read/write permissions on the external storage and microphone access "</string>
 </resources>

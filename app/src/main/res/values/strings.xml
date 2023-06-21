@@ -161,6 +161,7 @@
     <string name="publicar">Publicar</string>
     <string name="reproducir">Reproducir</string>
     <string name="regrabar">Regrabar</string>
+    <string name="info_permission_recorder">Se requieren permisos de lectura/escritura de almacenamiento externo y de microfono</string>
     <string-array name="notes">
         <item>La</item>
         <item>La#</item>
