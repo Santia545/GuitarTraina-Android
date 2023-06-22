@@ -20,6 +20,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,13 +32,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.example.guitartraina.R;
+import com.example.guitartraina.activities.account.LogInActivity;
+import com.example.guitartraina.api.IResult;
+import com.example.guitartraina.api.VolleyService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import be.tarsos.dsp.AudioDispatcher;
@@ -49,6 +60,9 @@ import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.writer.WriterProcessor;
 
 public class RecorderActivity extends AppCompatActivity {
+    private IResult resultCallback = null;
+    private VolleyService volleyService;
+
     private EditText etTitle, etDesc;
     private ImageButton btnPlay, btnRecord, btnReRecord, btnPublish;
     private TextView tvSeconds, tvNoteCounter;
@@ -73,7 +87,10 @@ public class RecorderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recorder);
-
+        initVolleyCallback();
+        volleyService = new VolleyService(resultCallback, this);
+        etTitle=findViewById(R.id.title_et);
+        etDesc=findViewById(R.id.description_et);
         btnRecord = findViewById(R.id.record_btn);
         btnPlay = findViewById(R.id.play_btn);
         btnReRecord = findViewById(R.id.re_record_btn);
@@ -84,6 +101,25 @@ public class RecorderActivity extends AppCompatActivity {
             view.setAlpha(0.5f);
             recordAudio();
             handler.postDelayed(stopRecording, 2500);
+        });
+        btnPublish.setOnClickListener(view -> {
+            if(etTitle.getText().toString().equals("")){
+                Toast.makeText(RecorderActivity.this, "title cant be empty", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            File file = new File(getExternalFilesDir(null), "audioTest.wav");
+            String filePath = file.getPath();
+            byte[] audioBytes = getByteArrayFromFile(filePath);
+            // Create JSONObject to send as request body
+            JSONObject jsonObject = new JSONObject();
+            try {
+                // Add audio data as base64-encoded string to JSONObject
+                jsonObject.put("audioData", Base64.encodeToString(audioBytes, Base64.DEFAULT));
+                jsonObject.put("fileName", new File(filePath).getName());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            volleyService.postDataVolley("/mockup?title="+etTitle.getText().toString(), jsonObject);
         });
         btnPlay.setOnClickListener(view -> playSound());
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -125,6 +161,7 @@ public class RecorderActivity extends AppCompatActivity {
         }
 
     }
+
     private double getGainFromPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RecorderActivity.this);
         int microphoneGain = sharedPreferences.getInt("microphone_gain", 10);
@@ -135,7 +172,7 @@ public class RecorderActivity extends AppCompatActivity {
         double gain = getGainFromPreferences();
         dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(SAMPLE_RATE, RECORD_BUFFER_SIZE, RECORD_BUFFER_OVERLAP);
         AudioProcessor gainProcessor = new GainProcessor(gain);
-        File file = new File(getExternalFilesDir(null), "audioTest");
+        File file = new File(getExternalFilesDir(null), "audioTest.wav");
         if (file.exists()) {
             file.delete(); // Delete the file if it already exists
         }
@@ -146,8 +183,8 @@ public class RecorderActivity extends AppCompatActivity {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        AndroidAudioPlayer androidAudioPlayer= new AndroidAudioPlayer(audioFormat);
-        WriterProcessor writerProcessor = new WriterProcessor(audioFormat,randomAccessFile);
+        AndroidAudioPlayer androidAudioPlayer = new AndroidAudioPlayer(audioFormat);
+        WriterProcessor writerProcessor = new WriterProcessor(audioFormat, randomAccessFile);
         dispatcher.addAudioProcessor(gainProcessor);
         dispatcher.addAudioProcessor(writerProcessor);
         dispatcher.addAudioProcessor(androidAudioPlayer);
@@ -157,12 +194,12 @@ public class RecorderActivity extends AppCompatActivity {
     }
 
     private void playSound() {
-        int BUFFER_SIZE = AudioTrack.getMinBufferSize(SAMPLE_RATE,CHANNEL_OUT_MONO,ENCODING_PCM_16BIT);
-        File file = new File(getExternalFilesDir(null), "audioTest");
+        int BUFFER_SIZE = AudioTrack.getMinBufferSize(SAMPLE_RATE, CHANNEL_OUT_MONO, ENCODING_PCM_16BIT);
+        File file = new File(getExternalFilesDir(null), "audioTest.wav");
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             UniversalAudioInputStream audioStream = new UniversalAudioInputStream(fileInputStream, audioFormat);
-            AudioDispatcher dispatcher = new AudioDispatcher(audioStream, BUFFER_SIZE, BUFFER_SIZE/2);
+            AudioDispatcher dispatcher = new AudioDispatcher(audioStream, BUFFER_SIZE, BUFFER_SIZE / 2);
             AndroidAudioPlayer player = new AndroidAudioPlayer(audioFormat);
             dispatcher.addAudioProcessor(player);
             Thread audioDispatcher = new Thread(dispatcher, "Audio Dispatcher");
@@ -177,7 +214,7 @@ public class RecorderActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(recorderThread!=null){
+        if (recorderThread != null) {
             try {
                 recorderThread.join();
             } catch (InterruptedException e) {
@@ -239,5 +276,60 @@ public class RecorderActivity extends AppCompatActivity {
         layout.addView(tvInfo);
         layout.addView(btnPermiss);
         return layout;
+    }
+
+    void initVolleyCallback() {
+        resultCallback = new IResult() {
+            @Override
+            public void notifySuccess(String requestType, Object response) {
+                Toast.makeText(RecorderActivity.this, getString(R.string.exito), Toast.LENGTH_LONG).show();
+                Log.d("notifySuccess", "Volley requester " + requestType);
+                Log.d("notifySuccess", "Volley JSON post" + response);
+            }
+
+            @Override
+            public void notifyError(String requestType, VolleyError error) {
+                error.printStackTrace();
+                String body = "";
+                String errorCode = "";
+                try {
+                    errorCode = "" + error.networkResponse.statusCode;
+                    body = new String(error.networkResponse.data, StandardCharsets.UTF_8);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String cause = "";
+                if (error.getCause() != null) {
+                    cause = error.getCause().getMessage();
+                }
+                Toast.makeText(RecorderActivity.this, getString(R.string.fallido) + cause + " " + body + " ", Toast.LENGTH_LONG).show();
+                Log.d("notifyError", "Volley requester " + requestType);
+                Log.d("notifyError", "Volley JSON post" + "That didn't work!" + error + " " + errorCode);
+                Log.d("notifyError", "Error: " + error
+                        + "\nStatus Code " + errorCode
+                        + "\nResponse Data " + body
+                        + "\nCause " + error.getCause()
+                        + "\nmessage " + error.getMessage());
+            }
+        };
+    }
+
+    private static byte[] getByteArrayFromFile(String filePath) {
+        byte[] bytes = null;
+        try {
+            FileInputStream fis = new FileInputStream(filePath);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                bos.write(buffer, 0, bytesRead);
+            }
+            fis.close();
+            bos.close();
+            bytes = bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bytes;
     }
 }
