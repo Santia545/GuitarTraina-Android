@@ -120,7 +120,7 @@ public class LogInActivity extends AppCompatActivity {
         long fechaLogin = archivo.getLong("logInDate", 0);
         if (intentosLogin == 0) {
             long minutos = System.currentTimeMillis();
-            minutos = minutos - (5 * 60 * 1000); // Subtract 5 minutes in milliseconds
+            minutos = minutos - (15 * 60 * 1000); // Subtract 5 minutes in milliseconds
             if (fechaLogin < minutos) {
                 restoreLogInTries();
                 return true; // returns true if the last try was more than 5 minutes ago
