@@ -133,4 +133,5 @@
         <item>7</item>
         <item>7m</item>
     </string-array>
+    <string name="login_tries_info">Too many failed login tries, wait the 15 minutes to try again</string>
 </resources>

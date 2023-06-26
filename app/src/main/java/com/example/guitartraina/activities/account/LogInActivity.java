@@ -89,6 +89,10 @@ public class LogInActivity extends AppCompatActivity {
 
     //agregar el timeout
     private void onClickLogIn() {
+        if(!isLoginNotCoolingDown()){
+            Toast.makeText(LogInActivity.this, R.string.login_tries_info,Toast.LENGTH_SHORT).show();
+            return;
+        }
         Email email;
         Password password;
         email = new Email(Objects.requireNonNull(Objects.requireNonNull(emailET.getEditText())).getText().toString());
@@ -109,6 +113,39 @@ public class LogInActivity extends AppCompatActivity {
         } else {
             emailET.setError(getString(R.string.email_incorrecto));
         }
+    }
+
+    private boolean isLoginNotCoolingDown() {
+        int intentosLogin = archivo.getInt("logInTries", 0);
+        long fechaLogin = archivo.getLong("logInDate", 0);
+        if (intentosLogin == 0) {
+            long minutos = System.currentTimeMillis();
+            minutos = minutos - (5 * 60 * 1000); // Subtract 5 minutes in milliseconds
+            if (fechaLogin < minutos) {
+                restoreLogInTries();
+                return true; // returns true if the last try was more than 5 minutes ago
+            }
+            return false; // returns false if 5 minutes haven't passed since the last try
+        }
+
+        return true; // returns true if the user still has some login tries left
+    }
+
+    private void restoreLogInTries() {
+        SharedPreferences.Editor editor = archivo.edit();
+        editor.putInt("logInTries", 5);
+        editor.remove("logInDate");
+        editor.apply();
+    }
+    private void registerlogInTry() {
+        int tries=archivo.getInt("logInTries",5);
+        tries--;
+        SharedPreferences.Editor editor = archivo.edit();
+        editor.putInt("logInTries", tries);
+        if(tries==0){
+            editor.putLong("logInDate", System.currentTimeMillis());
+        }
+        editor.apply();
     }
 
     @Override
@@ -133,10 +170,12 @@ public class LogInActivity extends AppCompatActivity {
                 Log.d("notifySuccess", "Volley requester " + requestType);
                 Log.d("notifySuccess", "Volley JSON post" + response);
                 logIn(response.toString());
+                restoreLogInTries();
             }
 
             @Override
             public void notifyError(String requestType, VolleyError error) {
+                registerlogInTry();
                 error.printStackTrace();
                 String body = "";
                 String errorCode = "";
@@ -161,6 +200,7 @@ public class LogInActivity extends AppCompatActivity {
             }
         };
     }
+
 
     private void logIn(String response) {
         SharedPreferences.Editor editor = archivo.edit();

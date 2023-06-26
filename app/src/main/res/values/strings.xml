@@ -153,6 +153,7 @@
     <string name="root_note">Nota Fundamental</string>
     <string name="chord_type">Tipo de Acorde</string>
     <string name="capo_barre_chord">Toca con capo o con cejilla en el traste indicado</string>
+    <string name="login_tries_info">Demasiados intentos fallidos, espera los 15 minutos necesarios para volver a iniciar sesión</string>
     <string-array name="notes">
         <item>La</item>
         <item>La#</item>
