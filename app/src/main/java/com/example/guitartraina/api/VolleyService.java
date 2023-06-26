@@ -13,6 +13,9 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class VolleyService {
 
     private final IResult resultCallback;
@@ -94,13 +97,20 @@ public class VolleyService {
         try {
             url = this.api + url;
             RequestQueue queue = Volley.newRequestQueue(context);
-            JsonObjectRequest jsonObj = new JsonObjectRequest(Request.Method.POST, url, null, response -> {
+            JsonObjectRequest jsonObj = new JsonObjectRequest(Request.Method.POST, url, sendObj, response -> {
                 if (resultCallback != null)
                     resultCallback.notifySuccess("POST", response);
             }, error -> {
                 if (resultCallback != null)
                     resultCallback.notifyError("POST", error);
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Content-Type", "application/json;charset=utf-8");
+                    return headers;
+                }
+            };
             queue.add(jsonObj);
 
         } catch (Exception ignored) {

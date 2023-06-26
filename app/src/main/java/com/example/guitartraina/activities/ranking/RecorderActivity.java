@@ -37,16 +37,19 @@ import com.example.guitartraina.R;
 import com.example.guitartraina.activities.account.LogInActivity;
 import com.example.guitartraina.api.IResult;
 import com.example.guitartraina.api.VolleyService;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -60,6 +63,10 @@ import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.writer.WriterProcessor;
 
 public class RecorderActivity extends AppCompatActivity {
+    private class AudioModel {
+        public byte[] AudioData;
+        public String FileName;
+    }
     private IResult resultCallback = null;
     private VolleyService volleyService;
 
@@ -96,6 +103,11 @@ public class RecorderActivity extends AppCompatActivity {
         btnReRecord = findViewById(R.id.re_record_btn);
         btnPublish = findViewById(R.id.publish_btn);
         togglePlayReRecordPublishButtons(false);
+        //debug code
+        etTitle.setText("Test");
+        btnPlay.setEnabled(true);
+        btnPublish.setEnabled(true);
+
         btnRecord.setOnClickListener(view -> {
             view.setEnabled(false);
             view.setAlpha(0.5f);
@@ -109,17 +121,23 @@ public class RecorderActivity extends AppCompatActivity {
             }
             File file = new File(getExternalFilesDir(null), "audioTest.wav");
             String filePath = file.getPath();
-            byte[] audioBytes = getByteArrayFromFile(filePath);
-            // Create JSONObject to send as request body
+            byte [] audioData= readAudioFileData(filePath);
+            // Convert byte array to Base64 string
+            String base64Audio = android.util.Base64.encodeToString(audioData, android.util.Base64.DEFAULT);
+
+            // Create the JSON object
             JSONObject jsonObject = new JSONObject();
             try {
-                // Add audio data as base64-encoded string to JSONObject
-                jsonObject.put("audioData", Base64.encodeToString(audioBytes, Base64.DEFAULT));
-                jsonObject.put("fileName", new File(filePath).getName());
+                jsonObject.put("audioData", base64Audio);
             } catch (JSONException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
-            volleyService.postDataVolley("/mockup?title="+etTitle.getText().toString(), jsonObject);
+
+
+            //debug code
+            volleyService.postDataVolley("/Ranking",jsonObject);
+
+            //volleyService.postDataVolley("/Ranking?title="+etTitle.getText().toString()+"&email="+"a19100060@ceti.mx"+"&notes="+10+"&description="+"test", jsonObject);
         });
         btnPlay.setOnClickListener(view -> playSound());
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -145,7 +163,7 @@ public class RecorderActivity extends AppCompatActivity {
 
     private void togglePlayReRecordPublishButtons(boolean enabled) {
         if (!enabled) {
-            btnPlay.setEnabled(true);
+            btnPlay.setEnabled(false);
             btnReRecord.setEnabled(false);
             btnPublish.setEnabled(false);
             btnPlay.setAlpha(0.5f);
@@ -314,22 +332,19 @@ public class RecorderActivity extends AppCompatActivity {
         };
     }
 
-    private static byte[] getByteArrayFromFile(String filePath) {
-        byte[] bytes = null;
+    private byte[] readAudioFileData(String filePath) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
-            FileInputStream fis = new FileInputStream(filePath);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(filePath));
             byte[] buffer = new byte[1024];
             int bytesRead;
-            while ((bytesRead = fis.read(buffer)) != -1) {
-                bos.write(buffer, 0, bytesRead);
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
             }
-            fis.close();
-            bos.close();
-            bytes = bos.toByteArray();
+            inputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("Error", "Failed to read audio file. Error: " + e.getMessage());
         }
-        return bytes;
+        return outputStream.toByteArray();
     }
 }
