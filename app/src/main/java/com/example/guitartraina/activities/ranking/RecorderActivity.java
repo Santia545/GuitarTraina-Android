@@ -201,11 +201,11 @@ public class RecorderActivity extends AppCompatActivity {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        AndroidAudioPlayer androidAudioPlayer = new AndroidAudioPlayer(audioFormat);
+        //AndroidAudioPlayer androidAudioPlayer = new AndroidAudioPlayer(audioFormat);
         WriterProcessor writerProcessor = new WriterProcessor(audioFormat, randomAccessFile);
         dispatcher.addAudioProcessor(gainProcessor);
         dispatcher.addAudioProcessor(writerProcessor);
-        dispatcher.addAudioProcessor(androidAudioPlayer);
+      //  dispatcher.addAudioProcessor(androidAudioPlayer);
         recorderThread = new Thread(dispatcher, "Audio Dispatcher");
         recorderThread.setPriority(Thread.MAX_PRIORITY);
         recorderThread.start();
