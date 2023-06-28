@@ -33,6 +33,7 @@ import java.io.InputStream;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Random;
 
@@ -50,14 +51,14 @@ public class EarTrainerActivity extends AppCompatActivity {
     private SwitchCompat swAutoDifficulty;
     private View.OnClickListener right;
     private View.OnClickListener wrong;
-    private TextView TVprogress;
+    private TextView TVprogress, TVdifficulty;
     private int counter = 1;
     private int rightAnswers = 0;
     private int wrongAnswers = 0;
     private IResult resultCallback = null;
     private VolleyService volleyService;
     private SharedPreferences archivo;
-    private int difficulty=1;
+    private int difficulty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class EarTrainerActivity extends AppCompatActivity {
         swAutoDifficulty = findViewById(R.id.switch1);
         tilesNotes = getResources().getStringArray(R.array.piano_notes);
         repeatSound = findViewById(R.id.repeat);
+        TVdifficulty = findViewById(R.id.difficultyTV);
         TVprogress = findViewById(R.id.progressTV);
         TVprogress.setText(String.format(Locale.getDefault(), getString(R.string.pregunta_x_15), counter));
         tile[0] = findViewById(R.id.tile1);
@@ -105,7 +107,6 @@ public class EarTrainerActivity extends AppCompatActivity {
             if(!compoundButton.isPressed())
                 return;
             if(compoundButton.isChecked()){
-                //shared preferences
                 recreate();
             } else {
                 dialogBuilder3().show();
@@ -174,12 +175,14 @@ public class EarTrainerActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.difficulty_change_description))
                 .setView(input)
                 .setPositiveButton(getString(R.string.save), (dialogInterface, i) -> {
-                    String title = input.getText().toString();
-                    if (title.equals("")) {
+                    String difficulty = input.getText().toString();
+                    if (difficulty.equals("")) {
                         Toast.makeText(EarTrainerActivity.this, getString(R.string.empty_difficult_error), Toast.LENGTH_SHORT).show();
                         dialogInterface.cancel();
                         return;
                     }
+                    this.difficulty=Integer.parseInt(difficulty);
+                    setManualDifficulty();
                     recreate();
                     dialogInterface.dismiss();
                 })
@@ -207,7 +210,7 @@ public class EarTrainerActivity extends AppCompatActivity {
     }
 
     private void saveProgress(double score) {
-        String url = "/Scores?module=1&score=" + score + "&difficulty=" + getDifficulty() + "&email=" + getCurrentUser();
+        String url = "/Scores?module=1&score=" + score + "&difficulty=" + difficulty + "&email=" + getCurrentUser();
         volleyService.postStringDataVolley(url);
     }
 
@@ -239,14 +242,76 @@ public class EarTrainerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        difficulty=getDifficulty();
+        TVdifficulty.setText(String.format(Locale.getDefault(),"%d", difficulty));
         genQuestion();
     }
 
     private void genQuestion() {
         int counter = 1;
-        int[] randomNumbersArray = new int[4];
+        int[][] randomNumbersMatrix;
+        randomNumbersMatrix=genRandomUniqueBidimentionalArray();
+
+        long seed = System.currentTimeMillis();
+        Random random = new Random(seed);
+
+        for (int randomNumber:randomNumbersMatrix[0]) {
+            playSound(randomNumber+ 1);
+        }
+        int randomOption = random.nextInt(4);
+        for (int i = 0; i < 4; i++) {
+            if (i == randomOption) {
+                options[i].setOnClickListener(right);
+                /*String[] convertedArray = new String[randomNumbersMatrix[0].length];
+                for (int j = 0; i < randomNumbersMatrix[0].length; i++) {
+                    int index = randomNumbersMatrix[0][j];
+                    convertedArray[j] =tilesNotes[index];
+                }*/
+                options[i].setText(String.format("%s", "correcta"/*Arrays.toString(convertedArray)*/));
+            } else {
+                options[i].setOnClickListener(wrong);
+                /*String[] convertedArray = new String[randomNumbersMatrix[counter].length];
+                for (int j = 0; i < randomNumbersMatrix[counter].length; i++) {
+                    int index = randomNumbersMatrix[counter][j];
+                    convertedArray[j] =tilesNotes[index];
+                }*/
+                options[i].setText(String.format("%s",  "no"/*Arrays.toString(convertedArray)*/));
+                counter++;
+            }
+        }
+        repeatSound.setOnClickListener(view -> {
+            for (int randomNumber:randomNumbersMatrix[0]) {
+                playSound(randomNumber+ 1);
+            }
+        });
+    }
+
+    private int[][] genRandomUniqueBidimentionalArray() {
+        int[][] randomNumbersMatrix = new int[4][];
         int count = 0;
         while (count < 4) {
+            int[] row=genRandomUniqueArray();
+            if (isRowUnique(row,randomNumbersMatrix)) {
+                randomNumbersMatrix[count] = row;
+                count++;
+            }
+        }
+        return randomNumbersMatrix;
+    }
+
+    private boolean isRowUnique(int[] newRow, int[][] bidimensionalArray) {
+        for (int[] row : bidimensionalArray) {
+            if (Arrays.equals(row, newRow)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int[] genRandomUniqueArray() {
+        int[] randomNumbersArray=new int[difficulty];
+        int count = 0;
+        while (count < difficulty) {
             long seed = System.currentTimeMillis();
             Random random = new Random(seed);
             int randomNumber = random.nextInt(12);
@@ -266,24 +331,7 @@ public class EarTrainerActivity extends AppCompatActivity {
                 count++;
             }
         }
-
-        long seed = System.currentTimeMillis();
-        Random random = new Random(seed);
-
-
-        playSound(randomNumbersArray[0] + 1);
-        int randomOption = random.nextInt(4);
-        for (int i = 0; i < 4; i++) {
-            if (i == randomOption) {
-                options[i].setOnClickListener(right);
-                options[i].setText(String.format("%s", tilesNotes[randomNumbersArray[0]]));
-            } else {
-                options[i].setOnClickListener(wrong);
-                options[i].setText(String.format("%s", tilesNotes[randomNumbersArray[counter]]));
-                counter++;
-            }
-        }
-        repeatSound.setOnClickListener(view -> playSound(randomNumbersArray[0] + 1));
+        return randomNumbersArray;
     }
 
     void initVolleyCallback() {
@@ -339,9 +387,9 @@ public class EarTrainerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    private void setManualDifficulty(int difficulty) {
+    private void setManualDifficulty() {
         SharedPreferences.Editor editor = archivo.edit();
-        editor.putInt("earAutoDifficulty", difficulty);
+        editor.putInt("earManualDifficulty", difficulty);
         editor.apply();
     }
     private void setAutoDifficulty() {
@@ -353,6 +401,10 @@ public class EarTrainerActivity extends AppCompatActivity {
         return archivo.getString("email", "");
     }
     private int getDifficulty() {
-        return archivo.getInt("earDifficulty", 1);
+        if(this.swAutoDifficulty.isChecked()){
+            return archivo.getInt("earAutoDifficulty", 1);
+        }else{
+            return archivo.getInt("earManualDifficulty",1);
+        }
     }
 }
