@@ -150,4 +150,6 @@
     <string name="ingresa_la_dificultad">Type the difficulty</string>
     <string name="difficulty_change_description">The difficulty is the amount of notes each question has, minim 1 note, maximum 7 notes. after setting a new difficulty the session its restarted</string>
     <string name="empty_difficult_error">The difficulty cannot be empty</string>
+    <string name="difficulty">Difficulty:</string>
+
 </resources>

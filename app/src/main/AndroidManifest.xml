@@ -20,6 +20,8 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
             android:name=".activities.EarTrainerActivity"
             android:exported="true" />
         <activity

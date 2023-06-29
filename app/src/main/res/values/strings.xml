@@ -170,6 +170,7 @@
     <string name="ingresa_la_dificultad">Ingresa la dificultad</string>
     <string name="difficulty_change_description">La dificultad es el numero de notas a identificar por pregunta, minimo 1 y maximo 7. al cambiar la dificultad se reinicia la sesion actual</string>
     <string name="empty_difficult_error">La dificultad no puede estar vacía</string>
+    <string name="difficulty">Dificultad:</string>
 
     <string-array name="notes">
         <item>La</item>

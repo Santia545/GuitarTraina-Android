@@ -6,14 +6,14 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.media.AudioFormat;
 import android.media.AudioTrack;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.example.guitartraina.R;
-import com.example.guitartraina.activities.tuner.TuningCreationActivity;
 import com.example.guitartraina.api.IResult;
 import com.example.guitartraina.api.VolleyService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,7 +43,7 @@ import be.tarsos.dsp.io.android.AndroidAudioPlayer;
 
 
 public class EarTrainerActivity extends AppCompatActivity {
-    private String[] tilesNotes = new String[]{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+    private String[] tilesNotes;
     private final FloatingActionButton[] tile = new FloatingActionButton[12];
     private final Button[] options = new Button[4];
     private Button repeatSound;
@@ -89,6 +88,19 @@ public class EarTrainerActivity extends AppCompatActivity {
         options[1] = findViewById(R.id.opc2);
         options[2] = findViewById(R.id.opc3);
         options[3] = findViewById(R.id.opc4);
+        //reset difficulty if user is free and 30 days have passed since last reset
+        String userType= getUserType();
+        if(!userType.equals("Pago")){
+            if(archivo.getLong("last_update_timestamp",0)!=0){
+                if(isThirtyDaysPassed()){
+                    difficulty=1;
+                    setAutoDifficulty();
+                    SharedPreferences.Editor editor = archivo.edit();
+                    editor.putLong("last_update_timestamp", System.currentTimeMillis());
+                    editor.apply();
+                }
+            }
+        }
         for (int i = 0; i < 12; i++) {
             int finalI = i;
             tile[i].setOnClickListener(view -> playSound(finalI + 1));
@@ -104,14 +116,30 @@ public class EarTrainerActivity extends AppCompatActivity {
             nextQuestionDialog(false);
         };
         swAutoDifficulty.setOnCheckedChangeListener((compoundButton, b) -> {
-            if(!compoundButton.isPressed())
+            if (!compoundButton.isPressed())
                 return;
-            if(compoundButton.isChecked()){
+            if (compoundButton.isChecked()) {
                 recreate();
             } else {
                 dialogBuilder3().show();
             }
         });
+    }
+    private boolean isThirtyDaysPassed() {
+        long currentTimeMillis = System.currentTimeMillis();
+        long lastUpdateMillis = archivo.getLong("last_update_timestamp", 0);
+
+        // Calculate the difference in milliseconds between the current time and the last update
+        long differenceMillis = currentTimeMillis - lastUpdateMillis;
+
+        // Check if 30 days have passed (30 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds)
+        return differenceMillis >= 30L * 24L * 60L * 60L * 1000L;
+    }
+    private String getUserType() {
+        if (archivo.contains("idUsuario")) {
+            return archivo.getString("idUsuario", "notlogged");
+        }
+        return "0";
     }
 
     private void nextQuestionDialog(boolean answer) {
@@ -145,15 +173,45 @@ public class EarTrainerActivity extends AppCompatActivity {
     }
 
     private void endProcess() {
-        double score=((double) rightAnswers / 15.) * 100;
+        double score = ((double) rightAnswers / 15.) * 100;
         saveProgress(score);
         dialogBuilder(score).show();
-        setDifficulty();
+        if(swAutoDifficulty.isChecked()){
+            if(!getUserType().equals("Pago")){
+                if(archivo.getLong("last_update_timestamp",0)==0){
+                    SharedPreferences.Editor editor =archivo.edit();
+                    editor.putLong("last_update_timestamp", System.currentTimeMillis());
+                    editor.apply();
+                }
+            }
+            checkScore(score);
+        }
     }
 
-    private void setDifficulty() {
+    private void checkScore(double score) {
+        int fails=archivo.getInt("failCounter",0);
 
+        if(score==100.){
+            if(difficulty<7){
+                difficulty++;
+                setAutoDifficulty();
+            }
+            fails=0;
+        }else{
+            fails++;
+            if(fails==4){
+                if(difficulty>1){
+                    difficulty--;
+                    setAutoDifficulty();
+                }
+                fails=0;
+            }
+        }
+        SharedPreferences.Editor editor = archivo.edit();
+        editor.putInt("failCounter", fails);
+        editor.apply();
     }
+
     private AlertDialog dialogBuilder3() {
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -169,7 +227,7 @@ public class EarTrainerActivity extends AppCompatActivity {
             }
             return "";
         };
-        input.setFilters(new InputFilter[] { inputFilter });
+        input.setFilters(new InputFilter[]{inputFilter});
         AlertDialog dialog = new AlertDialog.Builder(EarTrainerActivity.this)
                 .setTitle(getString(R.string.ingresa_la_dificultad))
                 .setMessage(getString(R.string.difficulty_change_description))
@@ -181,7 +239,7 @@ public class EarTrainerActivity extends AppCompatActivity {
                         dialogInterface.cancel();
                         return;
                     }
-                    this.difficulty=Integer.parseInt(difficulty);
+                    this.difficulty = Integer.parseInt(difficulty);
                     setManualDifficulty();
                     recreate();
                     dialogInterface.dismiss();
@@ -242,56 +300,62 @@ public class EarTrainerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        difficulty=getDifficulty();
-        TVdifficulty.setText(String.format(Locale.getDefault(),"%d", difficulty));
+        difficulty = getDifficulty();
+        TVdifficulty.setText(String.format(Locale.getDefault(),"%s%d", getString(R.string.difficulty), difficulty));
         genQuestion();
     }
 
     private void genQuestion() {
         int counter = 1;
         int[][] randomNumbersMatrix;
-        randomNumbersMatrix=genRandomUniqueBidimentionalArray();
+        randomNumbersMatrix = genRandomUniqueBidimentionalArray();
 
         long seed = System.currentTimeMillis();
         Random random = new Random(seed);
 
-        for (int randomNumber:randomNumbersMatrix[0]) {
-            playSound(randomNumber+ 1);
+        for (int randomNumber : randomNumbersMatrix[0]) {
+            playSound(randomNumber + 1);
         }
         int randomOption = random.nextInt(4);
         for (int i = 0; i < 4; i++) {
             if (i == randomOption) {
                 options[i].setOnClickListener(right);
-                /*String[] convertedArray = new String[randomNumbersMatrix[0].length];
-                for (int j = 0; i < randomNumbersMatrix[0].length; i++) {
-                    int index = randomNumbersMatrix[0][j];
-                    convertedArray[j] =tilesNotes[index];
-                }*/
-                options[i].setText(String.format("%s", "correcta"/*Arrays.toString(convertedArray)*/));
+                options[i].setBackgroundColor(Color.GREEN);
+                String opc = randomArrayToNoteString(randomNumbersMatrix[0]);
+                options[i].setText(String.format("%s", opc));
             } else {
                 options[i].setOnClickListener(wrong);
-                /*String[] convertedArray = new String[randomNumbersMatrix[counter].length];
-                for (int j = 0; i < randomNumbersMatrix[counter].length; i++) {
-                    int index = randomNumbersMatrix[counter][j];
-                    convertedArray[j] =tilesNotes[index];
-                }*/
-                options[i].setText(String.format("%s",  "no"/*Arrays.toString(convertedArray)*/));
+                String opc = randomArrayToNoteString(randomNumbersMatrix[counter]);
+                options[i].setBackgroundColor(Color.RED);
+                options[i].setText(String.format("%s", opc));
                 counter++;
             }
         }
         repeatSound.setOnClickListener(view -> {
-            for (int randomNumber:randomNumbersMatrix[0]) {
-                playSound(randomNumber+ 1);
+            for (int randomNumber : randomNumbersMatrix[0]) {
+                playSound(randomNumber + 1);
             }
         });
+    }
+
+    private String randomArrayToNoteString(int[] row) {
+        StringBuilder opc = new StringBuilder();
+        for (int j = 0; j < row.length; j++) {
+            if(j== row.length-1){
+                opc.append(tilesNotes[row[j]]);
+            }else {
+                opc.append(tilesNotes[row[j]]).append(",");
+            }
+        }
+        return opc.toString();
     }
 
     private int[][] genRandomUniqueBidimentionalArray() {
         int[][] randomNumbersMatrix = new int[4][];
         int count = 0;
         while (count < 4) {
-            int[] row=genRandomUniqueArray();
-            if (isRowUnique(row,randomNumbersMatrix)) {
+            int[] row = genRandomUniqueArray();
+            if (isRowUnique(row, randomNumbersMatrix)) {
                 randomNumbersMatrix[count] = row;
                 count++;
             }
@@ -309,13 +373,12 @@ public class EarTrainerActivity extends AppCompatActivity {
     }
 
     private int[] genRandomUniqueArray() {
-        int[] randomNumbersArray=new int[difficulty];
+        int[] randomNumbersArray = new int[difficulty];
         int count = 0;
         while (count < difficulty) {
             long seed = System.currentTimeMillis();
             Random random = new Random(seed);
             int randomNumber = random.nextInt(12);
-
             // Check if the generated random number is already in the randomNumbersArray
             boolean isDuplicate = false;
             for (int i = 0; i < count; i++) {
@@ -324,7 +387,6 @@ public class EarTrainerActivity extends AppCompatActivity {
                     break;
                 }
             }
-
             // If the number is unique, add it to the array
             if (!isDuplicate) {
                 randomNumbersArray[count] = randomNumber;
@@ -387,24 +449,28 @@ public class EarTrainerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private void setManualDifficulty() {
         SharedPreferences.Editor editor = archivo.edit();
         editor.putInt("earManualDifficulty", difficulty);
         editor.apply();
     }
+
     private void setAutoDifficulty() {
         SharedPreferences.Editor editor = archivo.edit();
         editor.putInt("earAutoDifficulty", difficulty);
         editor.apply();
     }
+
     private String getCurrentUser() {
         return archivo.getString("email", "");
     }
+
     private int getDifficulty() {
-        if(this.swAutoDifficulty.isChecked()){
+        if (this.swAutoDifficulty.isChecked()) {
             return archivo.getInt("earAutoDifficulty", 1);
-        }else{
-            return archivo.getInt("earManualDifficulty",1);
+        } else {
+            return archivo.getInt("earManualDifficulty", 1);
         }
     }
 }
