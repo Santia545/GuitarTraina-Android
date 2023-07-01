@@ -135,6 +135,11 @@ public class PracticeNotificationService extends Service {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFICATION_ID, builder.build());
+        notifications.add(new com.example.guitartraina.services.Notification(
+                getString(R.string.practice_reminder),
+                getString(R.string.notification_practice_reminder_desc),
+                new Date()
+        ));
         saveNotification(notifications);
     }
 
