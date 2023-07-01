@@ -20,6 +20,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".activities.tuner.YoutubePlayerActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ChordLibraryActivity"
             android:exported="true" />
         <activity
@@ -59,6 +62,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".services.GoogleAdmobService" />
     </application>
 
 </manifest>

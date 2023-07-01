@@ -6,6 +6,7 @@
     <string name="title_home">Hogar</string>
     <string name="title_dashboard">Panel</string>
     <string name="title_notifications">Notificaciones</string>
+    <string name="tutorial">Tutorial</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="reportar_errores">Reportar Errores</string>
     <string name="ingresa_el_titulo_del_error_ej_la_configuracion_no_se_guarda">Ingresa el titulo del error Ej: La configuracion no se guarda</string>

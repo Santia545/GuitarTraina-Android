@@ -8,6 +8,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="reportar_errores">Report an Error</string>
+    <string name="tutorial">Tutorial</string>
     <string name="ingresa_el_titulo_del_error_ej_la_configuracion_no_se_guarda">Write the title for the error</string>
     <string name="ingresa_el_numero_de_veces_que_ocurrio_el_error">How many times has the error occurred</string>
     <string name="ingresa_los_pasos_para_reproducir_el_problema_ej_en_el_afinador_intentar_crear_una_afinacion">Steps to get the error</string>

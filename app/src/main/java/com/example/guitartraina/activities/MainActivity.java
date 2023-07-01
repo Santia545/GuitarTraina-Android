@@ -1,8 +1,10 @@
 package com.example.guitartraina.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.guitartraina.R;
+import com.example.guitartraina.services.GoogleAdmobService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,4 +34,15 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startService(new Intent(this, GoogleAdmobService.class));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopService(new Intent(this, GoogleAdmobService.class));
+    }
 }
