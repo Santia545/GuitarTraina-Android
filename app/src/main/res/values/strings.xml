@@ -154,6 +154,9 @@
     <string name="notification_practice_reminder_desc">No has alcanzado tu meta de practica diaria</string>
     <string name="practice_notification_service_title">Servicio de Recordatorio de Practica de Guitar Traina</string>
     <string name="practice_notification_service_description">Presiona para abrir la aplicación</string>
+    <string name="posture_reminder">Recordatorio de postura</string>
+    <string name="notification_posture_reminder_desc">Endereza tu espalda!</string>
+    <string name="notifications">Notificaciones</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

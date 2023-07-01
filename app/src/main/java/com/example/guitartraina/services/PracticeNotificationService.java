@@ -1,4 +1,6 @@
 package com.example.guitartraina.services;
+import static android.content.ContentValues.TAG;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -17,10 +20,14 @@ import androidx.preference.PreferenceManager;
 
 import com.example.guitartraina.R;
 import com.example.guitartraina.activities.MainActivity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.UUID;
 
 public class PracticeNotificationService extends Service {
@@ -120,6 +127,7 @@ public class PracticeNotificationService extends Service {
     }
 
     private void sendNotification() {
+        List<com.example.guitartraina.services.Notification> notifications = getPrevNotifications();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.baseline_notifications_24)
                 .setContentTitle(getString(R.string.practice_reminder))
@@ -127,5 +135,28 @@ public class PracticeNotificationService extends Service {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFICATION_ID, builder.build());
+        saveNotification(notifications);
+    }
+
+    private void saveNotification(List<com.example.guitartraina.services.Notification> notifications){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String serializedList = gson.toJson(notifications);
+        editor.putString("notifications", serializedList);
+        editor.apply();
+        Log.d(TAG, "saveNotification: " + notifications.toString());
+    }
+
+    private List<com.example.guitartraina.services.Notification> getPrevNotifications() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String serializedList = sharedPreferences.getString("notifications", null);
+        if(serializedList != null){
+            Gson gson = new Gson();
+            return gson.fromJson(serializedList, new TypeToken<List<com.example.guitartraina.services.Notification>>(){}.getType());
+        }
+        else{
+            return new ArrayList<>();
+        }
     }
 }

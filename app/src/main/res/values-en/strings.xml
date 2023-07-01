@@ -112,5 +112,8 @@
     <string name="notification_practice_reminder_desc">You havent reached your daily practice goal</string>
     <string name="practice_notification_service_title">Guitar Traina Practice Reminder Service</string>
     <string name="practice_notification_service_description">Tap to open the app</string>
+    <string name="posture_reminder">Posture reminder</string>
+    <string name="notification_posture_reminder_desc">Get your back Straight!</string>
+    <string name="notifications">Notifications</string>
 
 </resources>

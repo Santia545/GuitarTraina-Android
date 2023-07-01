@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.guitartraina" >
+    package="com.example.guitartraina">
 
     <uses-sdk tools:overrideLibrary="androidx.security" />
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:allowBackup="false"
         android:fullBackupContent="false"
@@ -18,7 +19,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GuitarTraina"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m" >
+        tools:targetApi="m">
+        <activity
+            android:name=".activities.account.NotificationsActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.metronome.MetronomeActivity"
             android:exported="false" />
@@ -46,12 +50,14 @@
             android:exported="false" />
         <activity
             android:name=".activities.SplashScreen"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service android:name=".services.PracticeNotificationService" />
         <service android:name=".services.PostureNotificationService" />
     </application>

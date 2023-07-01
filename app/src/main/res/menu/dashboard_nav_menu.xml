@@ -41,6 +41,10 @@
         android:icon="@drawable/ic_baseline_bar_chart_24"
         android:title="@string/progreso" />
     <item
+        android:id="@+id/notifications"
+        android:icon="@drawable/baseline_notifications_24"
+        android:title="@string/notifications" />
+    <item
         android:id="@+id/navigation_ranking"
         android:icon="@drawable/ic_baseline_star_rate_24"
         android:title="@string/clasificados" />

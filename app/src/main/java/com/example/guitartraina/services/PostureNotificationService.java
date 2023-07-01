@@ -1,5 +1,7 @@
 package com.example.guitartraina.services;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -9,19 +11,25 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
 import com.example.guitartraina.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class PostureNotificationService extends Service {
 
     private static final int NOTIFICATION_ID = 3;
     private static final String CHANNEL_ID = "posture_notification_channel";
     private static int interval; // 5 minutes in milliseconds
-
     private final Handler handler = new Handler();
     private Runnable runnable;
 
@@ -31,6 +39,7 @@ public class PostureNotificationService extends Service {
         interval= getNotificationTimeFromPreferences();
         //interval = 5000;
         createNotificationChannel();
+
         runnable = () -> {
             sendNotification();
             handler.postDelayed(runnable, interval);
@@ -81,12 +90,38 @@ public class PostureNotificationService extends Service {
     }
 
     private void sendNotification() {
+        List<Notification> notifications = getPrevNotifications();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.baseline_notifications_24)
-                .setContentTitle("Posture reminder")
-                .setContentText("Get your back Straight!")
+                .setContentTitle(getString(R.string.posture_reminder))
+                .setContentText(getString(R.string.notification_posture_reminder_desc))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFICATION_ID, builder.build());
+        notifications.add(new Notification(getString(R.string.posture_reminder), getString(R.string.notification_posture_reminder_desc), new Date()));
+        saveNotification(notifications);
     }
+
+    private void saveNotification(List<Notification> notifications){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String serializedList = gson.toJson(notifications);
+        editor.putString("notifications", serializedList);
+        editor.apply();
+        Log.d(TAG, "saveNotification: " + notifications.toString());
+    }
+
+    private List<Notification> getPrevNotifications() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String serializedList = sharedPreferences.getString("notifications", null);
+        if(serializedList != null){
+            Gson gson = new Gson();
+            return gson.fromJson(serializedList, new TypeToken<List<Notification>>(){}.getType());
+        }
+        else{
+            return new ArrayList<>();
+        }
+    }
+
 }
