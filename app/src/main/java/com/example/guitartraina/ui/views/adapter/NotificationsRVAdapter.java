@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.guitartraina.R;
 import com.example.guitartraina.services.Notification;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class NotificationsRVAdapter extends RecyclerView.Adapter<NotificationsRVAdapter.NotifViewHolder> {
 
@@ -72,7 +74,10 @@ public class NotificationsRVAdapter extends RecyclerView.Adapter<NotificationsRV
     public void onBindViewHolder(@NonNull NotifViewHolder holder, int position) {
         Notification notification = notificationList.get(position);
         holder.tvTitle.setText(notification.getTitle());
-        holder.tvBody.setText(String.format("%s %s", notification.getBody(), notification.getDate().toString()));
+        String pattern = "dd/MM/yyyy hh:mm";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+        String date = simpleDateFormat.format(notification.getDate());
+        holder.tvBody.setText(String.format("%s %s", notification.getBody(), date));
     }
 
     @Override
