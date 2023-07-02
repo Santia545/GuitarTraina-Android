@@ -2,14 +2,12 @@ package com.example.guitartraina.activities;
 
 import static android.content.ContentValues.TAG;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
 import com.example.guitartraina.R;
-import com.example.guitartraina.activities.tuner.YoutubePlayerActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -54,11 +52,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-
-        startActivity(new Intent(this, YoutubePlayerActivity.class)
-                .putExtra("video", "\"https://www.youtube.com/embed/xyb74jO1QkA\"")
-                .putExtra("titulo", R.string.tutorial)
-                .putExtra("cuerpo", R.string.crear_afinacion_personalizada));
 
         getEncryptedSharedPreferences();
         boolean proStatus = !getUserType().equals("Pago");
