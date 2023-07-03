@@ -20,6 +20,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".activities.account.CheckoutActivity"
+            android:exported="false" />
+
+        <!-- This element is required to enable Google Pay in your app. -->
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
+
+        <activity
             android:name=".activities.ChordLibraryActivity"
             android:exported="true" />
         <activity

@@ -68,6 +68,12 @@
         app:title="@string/cuenta"
         >
         <Preference
+            app:key="go_pro"
+            android:title="@string/go_pro"
+            app:summary="@string/click_to_go_pro"
+            android:enabled="false"
+            />
+        <Preference
             app:key="sign_out"
             android:title="@string/log_out"
             app:summary="@string/click_to_logout"

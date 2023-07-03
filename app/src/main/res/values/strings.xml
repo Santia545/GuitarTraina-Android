@@ -175,5 +175,11 @@
         <item>7</item>
         <item>7m</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="googlepay_button_content_description">Google Pay</string>
+    <string name="buy_with_googlepay_button_content_description">Comprar con Google Pay</string>
+    <string name="googlepay_status_unavailable">Desafortunadamente, Google Pay no está disponible en su dispositivo.</string>
+    <string name="go_pro">CONVERTIRSE EN PRO!</string>
+    <string name="_10_usd">$10 USD</string>
+    <string name="click_to_go_pro">Click para convertirse en pro</string>
 </resources>

@@ -19,6 +19,7 @@ import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
 import com.example.guitartraina.R;
+import com.example.guitartraina.activities.account.CheckoutActivity;
 import com.example.guitartraina.activities.account.LogInActivity;
 import com.example.guitartraina.activities.tuner.Tuning;
 import com.google.gson.Gson;
@@ -138,6 +139,18 @@ public class ConfigurationFragment extends PreferenceFragmentCompat {
             });
 
         }
+        Preference goPro = findPreference("go_pro");
+        if(goPro != null){
+            if (archivo.contains("idUsuario")) {
+                if(archivo.getString("idUsuario", "notLogged").equals("Gratis")){
+                    goPro.setEnabled(true);
+                }
+            }
+            goPro.setOnPreferenceClickListener(preference -> {
+                onClickGoPro();
+                return true;
+            });
+        }
     }
 
     private void setDropDownPreferenceData(DropDownPreference tuning) {
@@ -180,6 +193,10 @@ public class ConfigurationFragment extends PreferenceFragmentCompat {
         Intent aux = new Intent(requireContext(), LogInActivity.class);
         startActivity(aux);
         requireActivity().finish();
+    }
+    private void onClickGoPro() {
+        Intent aux = new Intent(requireContext(), CheckoutActivity.class);
+        startActivity(aux);
     }
 
     private void getEncryptedSharedPreferences() {
