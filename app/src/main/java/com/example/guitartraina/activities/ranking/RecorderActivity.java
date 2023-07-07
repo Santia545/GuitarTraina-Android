@@ -20,7 +20,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -34,10 +33,8 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.example.guitartraina.R;
-import com.example.guitartraina.activities.account.LogInActivity;
 import com.example.guitartraina.api.IResult;
 import com.example.guitartraina.api.VolleyService;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,10 +43,8 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -60,28 +55,27 @@ import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.UniversalAudioInputStream;
 import be.tarsos.dsp.io.android.AndroidAudioPlayer;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
+import be.tarsos.dsp.writer.WaveHeader;
 import be.tarsos.dsp.writer.WriterProcessor;
 
 public class RecorderActivity extends AppCompatActivity {
-    private class AudioModel {
-        public byte[] AudioData;
-        public String FileName;
-    }
     private IResult resultCallback = null;
     private VolleyService volleyService;
 
     private EditText etTitle, etDesc;
-    private ImageButton btnPlay, btnRecord, btnReRecord, btnPublish;
+    private ImageButton btnPlay;
+    private ImageButton btnReRecord;
+    private ImageButton btnPublish;
     private TextView tvSeconds, tvNoteCounter;
     private Thread recorderThread = null;
     private AudioDispatcher dispatcher = null;
     int CHANNELS = 1;
     int BIT_DEPTH = 16;
-    boolean BIG_ENDIAN = false;
     private final int SAMPLE_RATE = 44100;
-    TarsosDSPAudioFormat audioFormat = new TarsosDSPAudioFormat(TarsosDSPAudioFormat.Encoding.PCM_SIGNED, SAMPLE_RATE, BIT_DEPTH, CHANNELS, 2, 1, BIG_ENDIAN);
+    TarsosDSPAudioFormat audioFormat = new TarsosDSPAudioFormat(SAMPLE_RATE, BIT_DEPTH, CHANNELS, true, false);
+    WaveHeader var1 = new WaveHeader((short)1, (short)this.audioFormat.getChannels(), (int)this.audioFormat.getSampleRate(), (short)16, 200);
+
     private final int RECORD_BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_IN_MONO, ENCODING_PCM_16BIT);
-    private final int RECORD_BUFFER_OVERLAP = RECORD_BUFFER_SIZE / 2;
     private final Runnable stopRecording = () -> {
         Toast.makeText(RecorderActivity.this, "Deteniendo", Toast.LENGTH_SHORT).show();
         dispatcher.stop();
@@ -94,17 +88,17 @@ public class RecorderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recorder);
+        Log.d("TAG", "onCreate: "+ var1.toString());
         initVolleyCallback();
         volleyService = new VolleyService(resultCallback, this);
         etTitle=findViewById(R.id.title_et);
         etDesc=findViewById(R.id.description_et);
-        btnRecord = findViewById(R.id.record_btn);
+        ImageButton btnRecord = findViewById(R.id.record_btn);
         btnPlay = findViewById(R.id.play_btn);
         btnReRecord = findViewById(R.id.re_record_btn);
         btnPublish = findViewById(R.id.publish_btn);
         togglePlayReRecordPublishButtons(false);
         //debug code
-        etTitle.setText("Test");
         btnPlay.setEnabled(true);
         btnPublish.setEnabled(true);
 
@@ -122,22 +116,10 @@ public class RecorderActivity extends AppCompatActivity {
             File file = new File(getExternalFilesDir(null), "audioTest.wav");
             String filePath = file.getPath();
             byte [] audioData= readAudioFileData(filePath);
-            // Convert byte array to Base64 string
-            String base64Audio = android.util.Base64.encodeToString(audioData, android.util.Base64.DEFAULT);
-
-            // Create the JSON object
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("audioData", base64Audio);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
 
 
-            //debug code
-            volleyService.postDataVolley("/Ranking",jsonObject);
+            volleyService.postStringDataVolley("/Ranking");
 
-            //volleyService.postDataVolley("/Ranking?title="+etTitle.getText().toString()+"&email="+"a19100060@ceti.mx"+"&notes="+10+"&description="+"test", jsonObject);
         });
         btnPlay.setOnClickListener(view -> playSound());
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -148,6 +130,7 @@ public class RecorderActivity extends AppCompatActivity {
             };
             requestPermissionLauncher.launch(permissions);
         }
+        btnPublish.setEnabled(true);
     }
 
     @Override
@@ -188,27 +171,32 @@ public class RecorderActivity extends AppCompatActivity {
 
     private void recordAudio() {
         double gain = getGainFromPreferences();
-        dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(SAMPLE_RATE, RECORD_BUFFER_SIZE, RECORD_BUFFER_OVERLAP);
         AudioProcessor gainProcessor = new GainProcessor(gain);
+        dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(44100, RECORD_BUFFER_SIZE, 0);
         File file = new File(getExternalFilesDir(null), "audioTest.wav");
-        if (file.exists()) {
-            file.delete(); // Delete the file if it already exists
-        }
         RandomAccessFile randomAccessFile = null;
-        try {
-            file.createNewFile(); // Create a new file
-            randomAccessFile = new RandomAccessFile(file, "rw");
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (file.delete()) {
+            try {
+                if(!file.createNewFile()){
+                    throw new RuntimeException();
+                }
+                randomAccessFile = new RandomAccessFile(file, "rw");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
-        //AndroidAudioPlayer androidAudioPlayer = new AndroidAudioPlayer(audioFormat);
+
+
+        AndroidAudioPlayer androidAudioPlayer = new AndroidAudioPlayer(audioFormat);
         WriterProcessor writerProcessor = new WriterProcessor(audioFormat, randomAccessFile);
-        dispatcher.addAudioProcessor(gainProcessor);
         dispatcher.addAudioProcessor(writerProcessor);
-      //  dispatcher.addAudioProcessor(androidAudioPlayer);
+        dispatcher.addAudioProcessor(gainProcessor);
+        dispatcher.addAudioProcessor(androidAudioPlayer);
         recorderThread = new Thread(dispatcher, "Audio Dispatcher");
         recorderThread.setPriority(Thread.MAX_PRIORITY);
         recorderThread.start();
+
+
     }
 
     private void playSound() {
