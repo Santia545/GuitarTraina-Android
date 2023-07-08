@@ -154,6 +154,17 @@
     <string name="chord_type">Tipo de Acorde</string>
     <string name="capo_barre_chord">Toca con capo o con cejilla en el traste indicado</string>
     <string name="login_tries_info">Demasiados intentos fallidos, espera los 15 minutos necesarios para volver a iniciar sesión</string>
+    <string name="pick_file">Escoja un archivo antes de continuar.</string>
+    <string name="choose_host">Elige un host para unirte.</string>
+    <string name="refresh">Recargar</string>
+    <string name="host">Host</string>
+    <string name="pick_media">Elegir audio</string>
+    <string name="start_hosting">Inicializar host</string>
+    <string name="ph_time" translatable="false">00:00</string>
+    <string name="host_indicator">Host: %1$s</string>
+    <string name="start">Iniciar</string>
+    <string name="downloading">Descargando…</string>
+    <string name="guest">Invitado</string>
     <string-array name="notes">
         <item>La</item>
         <item>La#</item>

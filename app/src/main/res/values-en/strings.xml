@@ -134,4 +134,14 @@
         <item>7m</item>
     </string-array>
     <string name="login_tries_info">Too many failed login tries, wait the 15 minutes to try again</string>
+    <string name="pick_file">Pick a file before continuing.</string>
+    <string name="choose_host">Choose a Host to join</string>
+    <string name="refresh">Refresh</string>
+    <string name="host">Host</string>
+    <string name="pick_media">Pick audio</string>
+    <string name="start_hosting">Start Hosting</string>
+    <string name="host_indicator">Host: %1$s</string>
+    <string name="start">Start</string>
+    <string name="downloading">Downloading…</string>
+    <string name="guest">Guest</string>
 </resources>
