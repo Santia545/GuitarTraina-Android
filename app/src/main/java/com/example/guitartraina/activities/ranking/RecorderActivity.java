@@ -186,12 +186,11 @@ public class RecorderActivity extends AppCompatActivity {
             }
         }
 
-
-        AndroidAudioPlayer androidAudioPlayer = new AndroidAudioPlayer(audioFormat);
         WriterProcessor writerProcessor = new WriterProcessor(audioFormat, randomAccessFile);
-        dispatcher.addAudioProcessor(writerProcessor);
+        GuitarStringsProcessor guitarStringsProcessor = new GuitarStringsProcessor();
         dispatcher.addAudioProcessor(gainProcessor);
-        dispatcher.addAudioProcessor(androidAudioPlayer);
+        dispatcher.addAudioProcessor(writerProcessor);
+        dispatcher.addAudioProcessor(guitarStringsProcessor);
         recorderThread = new Thread(dispatcher, "Audio Dispatcher");
         recorderThread.setPriority(Thread.MAX_PRIORITY);
         recorderThread.start();
