@@ -35,7 +35,11 @@ public class GuitarStringsProcessor implements AudioProcessor {
             // Pluck event detected
             float[] audioFloatBuffer = audioEvent.getFloatBuffer();
             PitchDetectionResult result = detector.getPitch(audioFloatBuffer);
-            stringPluckTimes.put("any", System.currentTimeMillis());
+            if(result.getProbability() > 0.90f) {
+                getClosestNote();
+
+                stringPluckTimes.put("any", System.currentTimeMillis());
+            }
         }
 
         previousAmplitude = currentAmplitude;
@@ -63,6 +67,10 @@ public class GuitarStringsProcessor implements AudioProcessor {
         float amplitudeDifference = currentAmplitude - previousAmplitude;
         return amplitudeDifference > 0;
     }
-
+    private double getCentsOff(double pitchInHz, double expectedFrequency) {
+        //Math.log(2.0) = 0.6931471805599453;
+        //12*100
+        return 1200 * Math.log(pitchInHz / expectedFrequency) / 0.6931471805599453;
+    }
 
 }
