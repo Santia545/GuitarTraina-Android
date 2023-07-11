@@ -14,6 +14,7 @@ import com.example.guitartraina.R;
 import com.example.guitartraina.activities.BugReportActivity;
 import com.example.guitartraina.activities.ChordLibraryActivity;
 import com.example.guitartraina.activities.LooperActivity;
+import com.example.guitartraina.activities.ProgressActivity;
 import com.example.guitartraina.activities.metronome.MetronomeActivity;
 import com.example.guitartraina.databinding.FragmentDashboardBinding;
 import com.google.android.material.navigation.NavigationView;
@@ -51,6 +52,8 @@ public class DashboardFragment extends Fragment {
                 Intent chordLibrary = new Intent(requireContext(), ChordLibraryActivity.class);
                 startActivity(chordLibrary);
             } else if (itemId == R.id.navigation_progreso) {
+                Intent progress = new Intent(requireContext(), ProgressActivity.class);
+                startActivity(progress);
             } else if (itemId == R.id.navigation_ranking) {
             } else if (itemId == R.id.navigation_unranked) {
             } else if (itemId == R.id.navigation_reportar_errores) {
