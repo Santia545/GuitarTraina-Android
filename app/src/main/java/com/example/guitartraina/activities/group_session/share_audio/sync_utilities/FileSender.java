@@ -1,4 +1,4 @@
-package com.example.guitartraina.activities.group_session.sync_utilities;
+package com.example.guitartraina.activities.group_session.share_audio.sync_utilities;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
-import com.example.guitartraina.activities.group_session.PreSessionActivity;
+import com.example.guitartraina.activities.group_session.share_audio.PreAudioSessionActivity;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -29,10 +29,10 @@ public class FileSender implements Runnable {
         DataOutputStream dos;
         String filename;
 
-        PreSessionActivity downloadActivity;
+        PreAudioSessionActivity downloadActivity;
         final int flen = 2048;
 
-        FileSenderHandler(Socket s, String filen, PreSessionActivity downloadActivity) {
+        FileSenderHandler(Socket s, String filen, PreAudioSessionActivity downloadActivity) {
             sock = s;
             this.downloadActivity = downloadActivity;
             try {
@@ -136,9 +136,9 @@ public class FileSender implements Runnable {
 
     AtomicBoolean running;
 
-    PreSessionActivity downloadActivity;
+    PreAudioSessionActivity downloadActivity;
 
-    public FileSender(String filename, int port, PreSessionActivity downloadActivity) {
+    public FileSender(String filename, int port, PreAudioSessionActivity downloadActivity) {
         running = new AtomicBoolean(true);
         filen = filename;
         this.downloadActivity = downloadActivity;

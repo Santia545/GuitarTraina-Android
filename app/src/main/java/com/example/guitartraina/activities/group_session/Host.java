@@ -1,4 +1,4 @@
-package com.example.guitartraina.activities.group_session.sync_utilities;
+package com.example.guitartraina.activities.group_session;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,9 +6,9 @@ import android.os.Parcelable;
 import java.net.InetAddress;
 
 public class Host implements Parcelable {
-    public String hostName;
-    public InetAddress hostAddress;
-    public int hostPort;
+    private final String hostName;
+    private final InetAddress hostAddress;
+    private final int hostPort;
 
     public Host(String hostName, InetAddress hostAddress, int hostPort) {
         this.hostAddress = hostAddress;

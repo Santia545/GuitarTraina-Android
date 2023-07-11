@@ -1,4 +1,4 @@
-package com.example.guitartraina.activities.group_session.sync_utilities;
+package com.example.guitartraina.activities.group_session;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,7 +9,7 @@ import android.util.Log;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
-import com.example.guitartraina.activities.group_session.adapter.HostListAdapter;
+import com.example.guitartraina.ui.views.adapter.HostListAdapter;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;

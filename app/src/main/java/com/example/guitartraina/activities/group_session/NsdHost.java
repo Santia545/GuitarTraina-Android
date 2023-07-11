@@ -1,4 +1,4 @@
-package com.example.guitartraina.activities.group_session.sync_utilities;
+package com.example.guitartraina.activities.group_session;
 
 import android.content.Context;
 import android.content.SharedPreferences;

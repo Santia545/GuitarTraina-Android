@@ -1,5 +1,6 @@
-package com.example.guitartraina.activities.group_session.adapter;
+package com.example.guitartraina.ui.views.adapter;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,9 +14,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.guitartraina.R;
-import com.example.guitartraina.activities.group_session.ClientActivity;
-import com.example.guitartraina.activities.group_session.PreSessionActivity;
-import com.example.guitartraina.activities.group_session.sync_utilities.Host;
+import com.example.guitartraina.activities.group_session.share_audio.AudioClientActivity;
+import com.example.guitartraina.activities.group_session.Host;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -24,10 +24,12 @@ public class HostListAdapter extends RecyclerView.Adapter<HostListAdapter.HostVi
 
     ArrayList<Host> hostList;
 
-    ClientActivity clientActivity;
+    Activity clientActivity;
+    Class<?> intentTo;
 
-    public HostListAdapter(ClientActivity clientActivity) {
+    public HostListAdapter(Activity clientActivity, Class<?> intentTo) {
         this.clientActivity = clientActivity;
+        this.intentTo = intentTo;
         hostList = new ArrayList<>();
     }
 
@@ -66,7 +68,7 @@ public class HostListAdapter extends RecyclerView.Adapter<HostListAdapter.HostVi
             Log.i("HOST_VIEW_CREATE", "BUTTON_PRESS");
             Toast.makeText(view.getContext(), hostList.get(pos).getHostAddress().toString(), Toast.LENGTH_LONG).show();
 
-            Intent intent = new Intent(clientActivity, PreSessionActivity.class);
+            Intent intent = new Intent(clientActivity, intentTo);
             intent.putExtra("user",1);
             intent.putExtra("host", hostList.get(pos));
             clientActivity.startActivity(intent);
@@ -81,7 +83,7 @@ public class HostListAdapter extends RecyclerView.Adapter<HostListAdapter.HostVi
 
     public void addHost(String hostName, InetAddress hostAddress, int hostPort) {
         hostList.add(new Host(hostName, hostAddress, hostPort));
-        updateRecyclerView();
+        clientActivity.runOnUiThread(() -> notifyItemInserted(getItemCount()));
     }
 
     public void removeHost(String hostName) {
@@ -93,15 +95,14 @@ public class HostListAdapter extends RecyclerView.Adapter<HostListAdapter.HostVi
         }
 
         hostList.remove(i);
-        updateRecyclerView();
+        int finalI = i;
+        clientActivity.runOnUiThread(() -> notifyItemRemoved(finalI));
+
     }
 
     public void clear() {
+        clientActivity.runOnUiThread(() -> notifyItemRangeRemoved(0, hostList.size()));
         hostList = new ArrayList<>();
-        updateRecyclerView();
     }
 
-    public void updateRecyclerView() {
-        clientActivity.runOnUiThread(this::notifyDataSetChanged);
-    }
 }

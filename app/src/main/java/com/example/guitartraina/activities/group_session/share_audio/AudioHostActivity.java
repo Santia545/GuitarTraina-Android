@@ -1,4 +1,4 @@
-package com.example.guitartraina.activities.group_session;
+package com.example.guitartraina.activities.group_session.share_audio;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,15 +11,15 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.guitartraina.R;
-import com.example.guitartraina.databinding.ActivityHostBinding;
+import com.example.guitartraina.databinding.ActivityAudioHostBinding;
 
-public class HostActivity extends AppCompatActivity {
+public class AudioHostActivity extends AppCompatActivity {
     private String lastSelectedMediaPath;
     private Uri lastSelectedMediaUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityHostBinding binding = ActivityHostBinding.inflate(getLayoutInflater());
+        ActivityAudioHostBinding binding = ActivityAudioHostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         binding.btnPickMedia.setOnClickListener(v -> {
@@ -30,13 +30,13 @@ public class HostActivity extends AppCompatActivity {
 
         binding.btnStartHosting.setOnClickListener(v -> {
             if(lastSelectedMediaPath != null) {
-                Intent intent = new Intent(HostActivity.this, PreSessionActivity.class);
+                Intent intent = new Intent(AudioHostActivity.this, PreAudioSessionActivity.class);
                 intent.putExtra("path", lastSelectedMediaPath);
                 intent.putExtra("uri",lastSelectedMediaUri);
                 intent.putExtra("user",0);
                 startActivity(intent);
             } else {
-                Toast.makeText(HostActivity.this, getText(R.string.pick_file), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AudioHostActivity.this, getText(R.string.pick_file), Toast.LENGTH_SHORT).show();
             }
 
         });

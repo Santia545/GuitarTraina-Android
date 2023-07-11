@@ -1,4 +1,4 @@
-package com.example.guitartraina.activities.group_session;
+package com.example.guitartraina.activities.group_session.share_audio;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.example.guitartraina.R;
-import com.example.guitartraina.activities.group_session.sync_utilities.Host;
-import com.example.guitartraina.activities.group_session.sync_utilities.SyncClient;
-import com.example.guitartraina.activities.group_session.sync_utilities.SyncServer;
+import com.example.guitartraina.activities.group_session.Host;
+import com.example.guitartraina.activities.group_session.share_audio.sync_utilities.SyncServer;
+import com.example.guitartraina.activities.group_session.share_audio.sync_utilities.SyncClient;
 import com.example.guitartraina.databinding.ActivityPlayerBinding;
 
 import java.net.InetAddress;
@@ -50,7 +50,7 @@ public class PlayerActivity extends AppCompatActivity {
             binding.btnPlayPause.setOnClickListener(v -> syncServer.togglePlayState());
         }else{
             Host host = getIntent().getParcelableExtra("host");
-            syncClient = new SyncClient(this, host.hostAddress);
+            syncClient = new SyncClient(this, host.getHostAddress());
         }
 
 

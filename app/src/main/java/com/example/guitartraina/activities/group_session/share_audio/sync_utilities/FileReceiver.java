@@ -1,4 +1,4 @@
-package com.example.guitartraina.activities.group_session.sync_utilities;
+package com.example.guitartraina.activities.group_session.share_audio.sync_utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,7 +9,7 @@ import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
 import com.example.guitartraina.R;
-import com.example.guitartraina.activities.group_session.PreSessionActivity;
+import com.example.guitartraina.activities.group_session.share_audio.PreAudioSessionActivity;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -32,10 +32,10 @@ public class FileReceiver implements Runnable {
 
     InetAddress IP;
     int port;
-    PreSessionActivity downloadActivity;
+    PreAudioSessionActivity downloadActivity;
     private SharedPreferences archivo;
 
-    public FileReceiver(InetAddress IP, int port, PreSessionActivity downloadActivity) {
+    public FileReceiver(InetAddress IP, int port, PreAudioSessionActivity downloadActivity) {
         getEncryptedSharedPreferences(downloadActivity);
         this.downloadActivity = downloadActivity;
         this.IP = IP;

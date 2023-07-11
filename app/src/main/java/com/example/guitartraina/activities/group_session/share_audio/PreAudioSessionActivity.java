@@ -1,4 +1,4 @@
-package com.example.guitartraina.activities.group_session;
+package com.example.guitartraina.activities.group_session.share_audio;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,12 +15,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.guitartraina.R;
-import com.example.guitartraina.activities.group_session.adapter.ClientListAdapter;
-import com.example.guitartraina.activities.group_session.sync_utilities.FileReceiver;
-import com.example.guitartraina.activities.group_session.sync_utilities.FileSender;
-import com.example.guitartraina.activities.group_session.sync_utilities.Host;
-import com.example.guitartraina.activities.group_session.sync_utilities.NsdHost;
-import com.example.guitartraina.databinding.ActivityPreSessionBinding;
+import com.example.guitartraina.activities.group_session.Host;
+import com.example.guitartraina.activities.group_session.NsdHost;
+import com.example.guitartraina.databinding.ActivityPreAudioSessionBinding;
+import com.example.guitartraina.ui.views.adapter.ClientListAdapter;
+import com.example.guitartraina.activities.group_session.share_audio.sync_utilities.FileReceiver;
+import com.example.guitartraina.activities.group_session.share_audio.sync_utilities.FileSender;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -28,9 +28,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.security.GeneralSecurityException;
 
-public class PreSessionActivity extends AppCompatActivity {
+public class PreAudioSessionActivity extends AppCompatActivity {
 
-    public ActivityPreSessionBinding binding;
+    public ActivityPreAudioSessionBinding binding;
     private int userType;
     private NsdHost nsdHost;
     private FileSender fs;
@@ -43,7 +43,7 @@ public class PreSessionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityPreSessionBinding.inflate(getLayoutInflater());
+        binding = ActivityPreAudioSessionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getEncryptedSharedPreferences(this);
         binding.tvDownloadingMediaText.setVisibility(View.GONE);
@@ -54,7 +54,7 @@ public class PreSessionActivity extends AppCompatActivity {
         userType = intent.getIntExtra("user", 0);
         if(userType == 0){
             binding.btnStart.setEnabled(false);
-            binding.tvHost.setText("Host: " + archivo.getString("email", getString(R.string.guest)));
+            binding.tvHost.setText(getString(R.string.host_indicator, archivo.getString("email", getString(R.string.guest))));
             String path = getIntent().getStringExtra("path");
             uri = getIntent().getParcelableExtra("uri");
             nsdHost = new NsdHost(this);
@@ -69,9 +69,8 @@ public class PreSessionActivity extends AppCompatActivity {
             binding.tvDownloadProgress.setVisibility(View.VISIBLE);
 
             binding.btnStart.setVisibility(View.GONE);
-            binding.tvHost.setText("Host: " + host.hostName);
-            FileReceiver fr = new FileReceiver(host.hostAddress, 3078, PreSessionActivity.this);
-
+            binding.tvHost.setText(getString(R.string.host_indicator, host.getHostName()));
+            FileReceiver fr = new FileReceiver(host.getHostAddress(), 3078, PreAudioSessionActivity.this);
         }
         setUpClientsRv();
     }
@@ -85,8 +84,8 @@ public class PreSessionActivity extends AppCompatActivity {
 
     public void onFailure(String msg) {
         runOnUiThread(() -> {
-            Toast.makeText(PreSessionActivity.this, msg, Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(PreSessionActivity.this, ClientActivity.class);
+            Toast.makeText(PreAudioSessionActivity.this, msg, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(PreAudioSessionActivity.this, AudioClientActivity.class);
             startActivity(intent);
         });
     }

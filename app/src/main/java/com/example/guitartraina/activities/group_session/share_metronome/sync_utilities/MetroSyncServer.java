@@ -1,10 +1,8 @@
-package com.example.guitartraina.activities.group_session.sync_utilities;
-
-import static java.lang.System.currentTimeMillis;
+package com.example.guitartraina.activities.group_session.share_metronome.sync_utilities;
 
 import android.util.Log;
 
-import com.example.guitartraina.activities.group_session.PlayerActivity;
+import com.example.guitartraina.activities.group_session.share_metronome.SharedMetronomeActivity;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -18,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class SyncServer {
+public class MetroSyncServer {
     class SyncSocket {
 
         Socket socket;
@@ -27,61 +25,24 @@ public class SyncServer {
         DataInputStream dis;
         Lock lock;
 
-        long echoDelay;
-        long totalDelay;
-
         public SyncSocket(Socket s) {
             socket = s;
             lock = new ReentrantLock();
             try {
                 dos = new DataOutputStream(socket.getOutputStream());
                 dis = new DataInputStream(socket.getInputStream());
-
-
-                calcDelay();
-                calcSeekDelay();
             } catch (IOException e) {
                 Log.e("SYNC_SOCK", e.toString());
                 close();
             }
         }
 
-        public void calcDelay() {
-            try {
-                dos.writeInt(SyncCommand.ECHO_RTT.ordinal());
-                dos.writeLong(currentTimeMillis());
-                if (dis.readInt() == SyncCommand.ECHO_RTT.ordinal()) {
-                    echoDelay = (currentTimeMillis() - dis.readLong()) / 2;
-                } else {
-                    Log.e("SYNC_SOCK", "protocol_not_followed");
-                    dis.readLong();
-                }
-            } catch (IOException e) {
-                Log.e("SYNC_SERV", e.toString());
-            }
-        }
-
-        public void calcSeekDelay() {
-            try {
-                dos.writeInt(SyncCommand.ECHO_SEEK.ordinal());
-                dos.writeLong(currentTimeMillis());
-                if (dis.readInt() == SyncCommand.ECHO_SEEK.ordinal()) {
-                    totalDelay = (currentTimeMillis() - dis.readLong()) - echoDelay;
-                } else {
-                    Log.e("SYNC_SOCK", "protocol_not_followed");
-                    dis.readLong();
-                }
-            } catch (IOException e) {
-                Log.e("SYNC_SERV", e.toString());
-            }
-        }
-
-        public void play(long l) {
+        public void play() {
             if (socket != null && dos != null) {
                 lock.lock();
                 try {
-                    dos.writeInt(SyncCommand.PLAY.ordinal());
-                    dos.writeLong(l + totalDelay);
+                    dos.writeInt(MetroSyncCommand.PLAY.ordinal());
+                    dos.flush();
                 } catch (IOException e) {
                     Log.e("SYNC_SOCK", e.toString());
                     socket = null;
@@ -92,12 +53,12 @@ public class SyncServer {
             }
         }
 
-        public void pause(long l) {
+        public void pause() {
             if (socket != null && dos != null) {
                 lock.lock();
                 try {
-                    dos.writeInt(SyncCommand.PAUSE.ordinal());
-                    dos.writeLong(l + totalDelay);
+                    dos.writeInt(MetroSyncCommand.PAUSE.ordinal());
+                    dos.flush();
                 } catch (IOException e) {
                     Log.e("SYNC_SOCK", e.toString());
                     socket = null;
@@ -127,7 +88,7 @@ public class SyncServer {
 
     private final ArrayList<SyncSocket> connectedSockets;
 
-    private final PlayerActivity playerActivity;
+    private final SharedMetronomeActivity metronomeActivity;
     private ServerSocket serv;
 
     private final AtomicBoolean running;
@@ -136,8 +97,8 @@ public class SyncServer {
 
     private boolean playState;
 
-    public SyncServer(PlayerActivity activity) {
-        playerActivity = activity;
+    public MetroSyncServer(SharedMetronomeActivity  activity) {
+        metronomeActivity = activity;
 
         try {
             serv = new ServerSocket(1603);
@@ -146,7 +107,7 @@ public class SyncServer {
         }
         connectedSockets = new ArrayList<>();
 
-        playState = true;
+        playState = false;
         exec = Executors.newSingleThreadExecutor();
 
         running = new AtomicBoolean(true);
@@ -165,24 +126,17 @@ public class SyncServer {
         listeningThread.start();
 
     }
-
-    public void togglePlayState() {
-        playState = !playState;
-        sync();
-    }
-
-    public void sync() {
-        long pos = playerActivity.getPlaybackPosition();
+    public void syncPlayState(boolean playState) {
         if (playState) {
             exec.execute(() -> {
                 for (SyncSocket s : connectedSockets) {
-                    s.play(pos);
+                    s.play();
                 }
             });
         } else {
             exec.execute(() -> {
                 for (SyncSocket s : connectedSockets) {
-                    s.pause(pos);
+                    s.pause();
                 }
             });
         }

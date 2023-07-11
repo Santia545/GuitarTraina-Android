@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.group_session.PlayerActivity">
+    tools:context=".activities.group_session.share_audio.PlayerActivity">
 
     <SeekBar
         android:id="@+id/sb_seekbar"
@@ -14,13 +14,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias=".4"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ImageButton
         android:id="@+id/btn_playPause"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_gravity="center"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:background="@color/white"
@@ -28,7 +28,8 @@
         android:src="@drawable/baseline_pause_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sb_seekbar"/>
+        app:layout_constraintTop_toBottomOf="@+id/sb_seekbar"
+        android:contentDescription="@string/pause" />
 
     <TextView
         android:id="@+id/tv_curTime"
@@ -53,6 +54,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/btn_playPause"
         app:layout_constraintTop_toTopOf="@+id/btn_playPause" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.example.guitartraina.activities.group_session.sync_utilities;
+package com.example.guitartraina.activities.group_session.share_audio.sync_utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,7 +8,7 @@ import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
 import com.example.guitartraina.R;
-import com.example.guitartraina.activities.group_session.PlayerActivity;
+import com.example.guitartraina.activities.group_session.share_audio.PlayerActivity;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

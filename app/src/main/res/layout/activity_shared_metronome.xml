@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.group_session.share_metronome.SharedMetronomeActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.23" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.33" />
+
+    <com.example.guitartraina.ui.views.MetronomeView
+        android:id="@+id/metronomeView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/guideline9"
+        app:layout_constraintBottom_toBottomOf="@id/guideline10"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/controls_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="beats_per_minute, metronome_play_btn, switch1, time_signature"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/beats_per_minute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/guideline10">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginVertical="10dp"
+            android:background="?android:attr/windowBackground"
+            android:hint="@string/pulsos_por_minutos"
+            android:inputType="number"
+            android:text="@string/defalut_bpm"
+            app:errorEnabled="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Spinner
+        android:id="@+id/time_signature"
+        style="@style/Widget.AppCompat.Spinner.DropDown"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:defaultValue="@array/time_signatures"
+        android:entries="@array/time_signatures"
+        app:layout_constraintTop_toBottomOf="@id/beats_per_minute" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/metronome_accent"
+        app:layout_constraintTop_toBottomOf="@id/time_signature"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:checked="true"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/metronome_play_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        app:icon="@drawable/baseline_play_arrow_24"
+        android:text="@string/play"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/switch1"
+        android:layout_marginTop="15dp"
+        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraLarge" />
+</androidx.constraintlayout.widget.ConstraintLayout>

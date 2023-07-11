@@ -3,10 +3,7 @@ package com.example.guitartraina.ui.dashboard;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +20,12 @@ import com.example.guitartraina.R;
 import com.example.guitartraina.activities.BugReportActivity;
 import com.example.guitartraina.activities.ChordLibraryActivity;
 import com.example.guitartraina.activities.LooperActivity;
-import com.example.guitartraina.activities.group_session.ClientActivity;
+import com.example.guitartraina.activities.group_session.PickTypeActivity;
+import com.example.guitartraina.activities.group_session.share_audio.AudioClientActivity;
 import com.example.guitartraina.activities.metronome.MetronomeActivity;
 import com.example.guitartraina.databinding.FragmentDashboardBinding;
 import com.google.android.material.navigation.NavigationView;
 
-import java.io.File;
-import java.io.RandomAccessFile;
 import java.util.Map;
 
 public class DashboardFragment extends Fragment {
@@ -84,7 +80,7 @@ public class DashboardFragment extends Fragment {
             };
             requestPermissionLauncher.launch(permissions);
         }else{
-            Intent group= new Intent(requireContext(), ClientActivity.class);
+            Intent group= new Intent(requireContext(), PickTypeActivity.class);
             startActivity(group);
         }
     }
@@ -106,7 +102,7 @@ public class DashboardFragment extends Fragment {
                 if (allPermissionsGranted) {
                     // All permissions granted
                     Toast.makeText(requireContext(), "All permissions granted", Toast.LENGTH_SHORT).show();
-                    Intent group= new Intent(requireContext(), ClientActivity.class);
+                    Intent group= new Intent(requireContext(), PickTypeActivity.class);
                     startActivity(group);
                 }
             }

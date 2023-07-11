@@ -1,6 +1,6 @@
-package com.example.guitartraina.activities.group_session.adapter;
+package com.example.guitartraina.ui.views.adapter;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,20 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.guitartraina.R;
-import com.example.guitartraina.activities.group_session.PreSessionActivity;
 
 import java.util.ArrayList;
 
 public class ClientListAdapter extends RecyclerView.Adapter<ClientListAdapter.ClientViewHolder> {
 
     ArrayList<String> clientNicks;
+    Activity hostActivity;
 
-   PreSessionActivity playerActivity;
-
-    public ClientListAdapter(PreSessionActivity playerActivity) {
-        this.playerActivity = playerActivity;
-
+    public ClientListAdapter(Activity hostActivity) {
         clientNicks = new ArrayList<>();
+        this.hostActivity = hostActivity;
     }
 
     @NonNull
@@ -53,18 +50,10 @@ public class ClientListAdapter extends RecyclerView.Adapter<ClientListAdapter.Cl
 
     public void addClient(String clientNick) {
         clientNicks.add(clientNick);
-        updateUI();
+        hostActivity.runOnUiThread(() -> notifyItemInserted(getItemCount()));
     }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void updateUI() {
-        playerActivity.runOnUiThread(this::notifyDataSetChanged);
-    }
-
     public class ClientViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        //public ConstraintLayout row;
         public TextView textView;
-        //public Button button;
 
         @Override
         public void onClick(View view) {

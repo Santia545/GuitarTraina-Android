@@ -8,8 +8,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="false"
@@ -22,16 +22,28 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
-            android:name=".activities.group_session.PreSessionActivity"
+            android:name=".activities.group_session.PickTypeActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.group_session.PlayerActivity"
+            android:name=".activities.group_session.share_metronome.MetronomeHostActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.group_session.HostActivity"
+            android:name=".activities.group_session.share_metronome.SharedMetronomeActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.group_session.ClientActivity"
+            android:name=".activities.group_session.share_metronome.MetronomeClientActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.group_session.share_audio.PreAudioSessionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.group_session.share_audio.PlayerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.group_session.share_audio.AudioHostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.group_session.share_audio.AudioClientActivity"
             android:exported="false" />
         <activity
             android:name=".activities.ChordLibraryActivity"
