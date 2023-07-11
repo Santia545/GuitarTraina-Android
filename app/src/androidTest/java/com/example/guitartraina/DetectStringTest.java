@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.GainProcessor;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.UniversalAudioInputStream;
 import be.tarsos.dsp.io.android.AndroidAudioPlayer;
@@ -59,6 +61,8 @@ public class DetectStringTest {
     private void recordAudio() {
         dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(SAMPLE_RATE, RECORD_BUFFER_SIZE, 0);
         GuitarStringsProcessor guitarStringsProcessor = new GuitarStringsProcessor();
+        AudioProcessor gainProcessor = new GainProcessor(5.0);
+        dispatcher.addAudioProcessor(gainProcessor);
         dispatcher.addAudioProcessor(guitarStringsProcessor);
         Thread recorderThread = new Thread(dispatcher, "Audio Dispatcher");
         recorderThread.setPriority(Thread.MAX_PRIORITY);
