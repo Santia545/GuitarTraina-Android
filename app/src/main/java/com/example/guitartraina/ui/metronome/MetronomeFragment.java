@@ -1,10 +1,6 @@
 package com.example.guitartraina.ui.metronome;
 
 import android.os.Bundle;
-
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +10,11 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.fragment.app.Fragment;
+
 import com.example.guitartraina.R;
-import com.example.guitartraina.activities.metronome.Metronome;
+import com.example.guitartraina.activities.group_session.share_metronome.sync_utilities.SharedMetronome;
 import com.example.guitartraina.ui.views.MetronomeView;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -28,13 +27,13 @@ public class MetronomeFragment extends Fragment {
     private int noteType;
     private int noteNumber;
     private MetronomeView metronomeView;
-    private Metronome metronome;
+    private SharedMetronome metronome;
     private SwitchCompat swAccent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-         metronome = new Metronome(requireActivity());
+         metronome = new SharedMetronome(requireActivity());
     }
 
     @Override

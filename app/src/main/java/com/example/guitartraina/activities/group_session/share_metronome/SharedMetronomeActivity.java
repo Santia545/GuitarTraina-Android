@@ -16,7 +16,7 @@ import com.example.guitartraina.R;
 import com.example.guitartraina.activities.group_session.Host;
 import com.example.guitartraina.activities.group_session.share_metronome.sync_utilities.MetroSyncClient;
 import com.example.guitartraina.activities.group_session.share_metronome.sync_utilities.MetroSyncServer;
-import com.example.guitartraina.activities.metronome.Metronome;
+import com.example.guitartraina.activities.group_session.share_metronome.sync_utilities.SharedMetronome;
 import com.example.guitartraina.databinding.ActivitySharedMetronomeBinding;
 
 import java.net.InetAddress;
@@ -26,7 +26,7 @@ import java.util.Objects;
 public class SharedMetronomeActivity extends AppCompatActivity {
     public ActivitySharedMetronomeBinding binding;
     private int usertype;
-    private Metronome metronome;
+    private SharedMetronome metronome;
     private int noteType;
     private int noteNumber;
     private MetroSyncServer syncServer;
@@ -40,9 +40,9 @@ public class SharedMetronomeActivity extends AppCompatActivity {
         Intent intent = getIntent();
         usertype = intent.getIntExtra("user", 0);
 
-        metronome = new Metronome(this);
+        metronome = new SharedMetronome(this);
         if(usertype == 0){
-            syncServer = new MetroSyncServer(this);
+            syncServer = new MetroSyncServer();
             try {
                 InetAddress addr = InetAddress.getByName("127.0.0.1");
                 syncClient = new MetroSyncClient(this, addr);
@@ -56,7 +56,7 @@ public class SharedMetronomeActivity extends AppCompatActivity {
             syncClient = new MetroSyncClient(this, host.getHostAddress());
         }
     }
-    public Metronome getMetronome() {
+    public SharedMetronome getMetronome() {
         return metronome;
     }
     private void addViewOnClickListeners() {
@@ -74,7 +74,7 @@ public class SharedMetronomeActivity extends AppCompatActivity {
                     binding.beatsPerMinute.getEditText().setText(R.string.defalut_bpm);
                     return true; // Consume the event
                 }
-                metronome.setBpm(bpm);
+                syncServer.syncBPM(bpm);
                 return true;
             }
             return false;
@@ -85,9 +85,7 @@ public class SharedMetronomeActivity extends AppCompatActivity {
                 String[] timeSignature = adapterView.getItemAtPosition(itemPosition).toString().split("/");
                 noteNumber = Integer.parseInt(timeSignature[0]);
                 noteType = Integer.parseInt(timeSignature[1]);
-                binding.metronomeView.setNotesNumber(noteNumber);
-                metronome.setNotesNumber(noteNumber);
-                metronome.setNoteType(noteType);
+                syncServer.timeSignature(noteNumber, noteType);
             }
 
             @Override
@@ -95,18 +93,10 @@ public class SharedMetronomeActivity extends AppCompatActivity {
             }
         });
         binding.metronomePlayBtn.setOnClickListener(view -> {
-            if(metronome.isRunning()){
-                syncServer.syncPlayState(false);
-            }else{
-                syncServer.syncPlayState(true);
-            }
+            syncServer.syncPlayState(!metronome.isRunning());
         });
         binding.switch1.setOnCheckedChangeListener((compoundButton, b) -> {
-            if(compoundButton.isChecked()){
-                metronome.setNoteAccent(0);
-            }else{
-                metronome.setNoteAccent(-1);
-            }
+            syncServer.syncAccent(compoundButton.isChecked());
         });
     }
 

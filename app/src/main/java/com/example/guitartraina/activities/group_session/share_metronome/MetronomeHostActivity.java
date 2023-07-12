@@ -85,7 +85,9 @@ public class MetronomeHostActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        nsdHost.unRegisterService();
+        if(nsdHost != null){
+            nsdHost.unRegisterService();
+        }
     }
 
     public void sendStartMetronomeSignal(DataOutputStream dos, DataInputStream dis, Socket sock) {

@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.GeneralSecurityException;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MetroSyncClient implements Runnable {
@@ -65,12 +64,9 @@ public class MetroSyncClient implements Runnable {
             Log.e("SYNC_CLIENT", e.toString());
         }
 
-        Semaphore sem = new Semaphore(1);
         while (running.get()) {
             try {
                 int command = dis.readInt();
-                long val = dis.readLong();
-
 
                 if (command == MetroSyncCommand.PLAY.ordinal()) {
                     metronomeActivity.runOnUiThread(() -> {
@@ -82,6 +78,25 @@ public class MetroSyncClient implements Runnable {
                         metronomeActivity.getMetronome().pause();
                         metronomeActivity.binding.metronomePlayBtn.setText(R.string.play);
                     });
+                } else if (command == MetroSyncCommand.ACCENT_ON.ordinal()) {
+                    metronomeActivity.runOnUiThread(() -> {
+                        metronomeActivity.getMetronome().setNoteAccent(0);
+                    });
+                } else if (command == MetroSyncCommand.ACCENT_OFF.ordinal()) {
+                    metronomeActivity.runOnUiThread(() -> {
+                        metronomeActivity.getMetronome().setNoteAccent(-1);
+                    });
+                } else if (command == MetroSyncCommand.TEMPO.ordinal()) {
+                    int noteNumber = dis.readInt();
+                    int noteType = dis.readInt();
+                    metronomeActivity.runOnUiThread(() -> {
+                        metronomeActivity.binding.metronomeView.setNotesNumber(noteNumber);
+                        metronomeActivity.getMetronome().setNotesNumber(noteNumber);
+                        metronomeActivity.getMetronome().setNoteType(noteType);
+                    });
+                } else if (command == MetroSyncCommand.BPM.ordinal()) {
+                    int bpm = dis.readInt();
+                    metronomeActivity.runOnUiThread(() -> metronomeActivity.getMetronome().setBpm(bpm));
                 }
             } catch (IOException e) {
                 running.set(false);

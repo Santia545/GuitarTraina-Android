@@ -8,6 +8,7 @@ enum MetroSyncCommand {
     ECHO_SEEK,
     TEMPO,
     BPM,
-    ACCENT
+    ACCENT_ON,
+    ACCENT_OFF
 
 }

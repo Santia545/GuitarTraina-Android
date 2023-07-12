@@ -1,10 +1,5 @@
 package com.example.guitartraina.activities.group_session.share_audio;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKeys;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,13 +9,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKeys;
+
 import com.example.guitartraina.R;
 import com.example.guitartraina.activities.group_session.Host;
 import com.example.guitartraina.activities.group_session.NsdHost;
-import com.example.guitartraina.databinding.ActivityPreAudioSessionBinding;
-import com.example.guitartraina.ui.views.adapter.ClientListAdapter;
 import com.example.guitartraina.activities.group_session.share_audio.sync_utilities.FileReceiver;
 import com.example.guitartraina.activities.group_session.share_audio.sync_utilities.FileSender;
+import com.example.guitartraina.databinding.ActivityPreAudioSessionBinding;
+import com.example.guitartraina.ui.views.adapter.ClientListAdapter;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

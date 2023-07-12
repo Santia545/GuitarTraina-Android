@@ -1,19 +1,13 @@
 package com.example.guitartraina.activities.group_session.share_metronome;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.Toast;
-
-import com.example.guitartraina.R;
 import com.example.guitartraina.activities.group_session.NsdClient;
-import com.example.guitartraina.activities.group_session.share_audio.AudioClientActivity;
-import com.example.guitartraina.activities.group_session.share_audio.AudioHostActivity;
-import com.example.guitartraina.activities.group_session.share_audio.PreAudioSessionActivity;
-import com.example.guitartraina.databinding.ActivityMetronomeBinding;
 import com.example.guitartraina.databinding.ActivityMetronomeClientBinding;
 import com.example.guitartraina.ui.views.adapter.HostListAdapter;
 

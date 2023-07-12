@@ -30,7 +30,6 @@ public class NsdClient {
 
     public NsdClient(Context context, HostListAdapter adapter) {
         this.adapter = adapter;
-
         manager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
         getUserEmail(context);
         makeResolveListener();
@@ -96,7 +95,7 @@ public class NsdClient {
                     Log.d(TAG, "Unknown service type -> " + serviceInfo.getServiceType());
                 } else if(serviceInfo.getServiceName().equals(SERVICE_NAME)) {
                     Log.d(TAG, "Own service -> " + serviceInfo.getServiceName());
-                } else {
+                } else{
                     Log.d(TAG, "Host found -> " + serviceInfo.getServiceName());
                     manager.resolveService(serviceInfo, resolveListener);
                 }

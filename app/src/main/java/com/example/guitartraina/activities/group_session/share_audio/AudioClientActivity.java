@@ -1,11 +1,11 @@
 package com.example.guitartraina.activities.group_session.share_audio;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
-import android.os.Bundle;
 
 import com.example.guitartraina.activities.group_session.NsdClient;
 import com.example.guitartraina.databinding.ActivityAudioClientBinding;

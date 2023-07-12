@@ -2,8 +2,6 @@ package com.example.guitartraina.activities.group_session.share_metronome.sync_u
 
 import android.util.Log;
 
-import com.example.guitartraina.activities.group_session.share_metronome.SharedMetronomeActivity;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -68,6 +66,60 @@ public class MetroSyncServer {
                 close();
             }
         }
+        public void accent(boolean accent) {
+            if (socket != null && dos != null) {
+                lock.lock();
+                try {
+                    if(accent){
+                        dos.writeInt(MetroSyncCommand.ACCENT_ON.ordinal());
+                    }else{
+                        dos.writeInt(MetroSyncCommand.ACCENT_OFF.ordinal());
+                    }
+                    dos.flush();
+                } catch (IOException e) {
+                    Log.e("SYNC_SOCK", e.toString());
+                    socket = null;
+                }
+                lock.unlock();
+            } else {
+                close();
+            }
+        }
+
+        public void timeSig(int noteNumber, int noteType) {
+            if (socket != null && dos != null) {
+                lock.lock();
+                try {
+                    dos.writeInt(MetroSyncCommand.TEMPO.ordinal());
+                    dos.writeInt(noteNumber);
+                    dos.writeInt(noteType);
+                    dos.flush();
+                } catch (IOException e) {
+                    Log.e("SYNC_SOCK", e.toString());
+                    socket = null;
+                }
+                lock.unlock();
+            } else {
+                close();
+            }
+        }
+
+        public void bpm(int bpm){
+            if (socket != null && dos != null) {
+                lock.lock();
+                try {
+                    dos.writeInt(MetroSyncCommand.BPM.ordinal());
+                    dos.writeInt(bpm);
+                    dos.flush();
+                } catch (IOException e) {
+                    Log.e("SYNC_SOCK", e.toString());
+                    socket = null;
+                }
+                lock.unlock();
+            } else {
+                close();
+            }
+        }
 
         public boolean isNull() {
             return (socket == null);
@@ -88,17 +140,13 @@ public class MetroSyncServer {
 
     private final ArrayList<SyncSocket> connectedSockets;
 
-    private final SharedMetronomeActivity metronomeActivity;
     private ServerSocket serv;
 
     private final AtomicBoolean running;
 
     private final Executor exec;
 
-    private boolean playState;
-
-    public MetroSyncServer(SharedMetronomeActivity  activity) {
-        metronomeActivity = activity;
+    public MetroSyncServer() {
 
         try {
             serv = new ServerSocket(1603);
@@ -107,7 +155,6 @@ public class MetroSyncServer {
         }
         connectedSockets = new ArrayList<>();
 
-        playState = false;
         exec = Executors.newSingleThreadExecutor();
 
         running = new AtomicBoolean(true);
@@ -140,6 +187,29 @@ public class MetroSyncServer {
                 }
             });
         }
+    }
+    public void syncAccent(boolean accent){
+        exec.execute(() -> {
+            for (SyncSocket s : connectedSockets) {
+                s.accent(accent);
+            }
+        });
+    }
+
+    public void timeSignature(int noteNumber, int noteType) {
+        exec.execute(() -> {
+            for (SyncSocket s : connectedSockets) {
+                s.timeSig(noteNumber, noteType);
+            }
+        });
+    }
+
+    public void syncBPM(int bpm) {
+        exec.execute(() -> {
+            for (SyncSocket s : connectedSockets) {
+                s.bpm(bpm);
+            }
+        });
     }
 
     @Override
